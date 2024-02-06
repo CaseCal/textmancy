@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "textmancy"
+version = "0.1.0"
+description = "LLM-driven package for mapping, analyzing and expanding text works."
+authors = ["Caleb Case <caleb.case93@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+langchain = "^0.0.331"
+openai = "0.28.0"
+thefuzz = "^0.20.0"
+
+[tool.poetry.group.dev.dependencies]
+bump2version = "^1.0.1"
+pytest = "^7.4.3"
+towncrier = "^23.10.0"
+python-dotenv = "^1.0.0"
+flake8 = "^7.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
