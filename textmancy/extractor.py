@@ -1,6 +1,6 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from functools import cached_property
-from typing import Sequence
+from typing import Generator, Iterable, Sequence, Union
 
 from langchain.prompts import ChatPromptTemplate
 from langchain.chat_models import ChatOpenAI
@@ -87,14 +87,36 @@ class Extractor:
         )
         return getattr(result, self.target_name + "s")
 
-    def extract(self, text: str, chunk_size=4000, **kwargs) -> list:
+    def extract(
+        self, input_data: Union[str, Iterable, Generator], chunk_size=4000, **kwargs
+    ) -> list:
         pool = ThreadPoolExecutor(max_workers=10)
-
-        # Split text into chunks and extract asynchronously
         futures = []
-        for i in range(0, len(text), chunk_size):
-            text_chunk = text[i : i + chunk_size]
-            futures.append(pool.submit(self._extract_from_block, text_chunk, **kwargs))
+
+        if isinstance(input_data, str):
+            # Input is a string, process it in chunks
+            for i in range(0, len(input_data), chunk_size):
+                text_chunk = input_data[i : i + chunk_size]
+                futures.append(
+                    pool.submit(self._extract_from_block, text_chunk, **kwargs)
+                )
+        else:
+            # Input is a stream or generator, process it iteratively
+            text_chunk = ""
+            for piece in input_data:
+                print(f"Generator returned {piece}")
+                text_chunk += piece
+                if len(text_chunk) >= chunk_size:
+                    # Submit the current chunk for processing
+                    futures.append(
+                        pool.submit(self._extract_from_block, text_chunk, **kwargs)
+                    )
+                    text_chunk = ""
+            # Make sure to process the last chunk if it's not empty
+            if text_chunk:
+                futures.append(
+                    pool.submit(self._extract_from_block, text_chunk, **kwargs)
+                )
 
         # Retrieve results as they complete
         results = []

@@ -1,37 +1,19 @@
 import dotenv
-from textmancy.extractor import Extractor
-from textmancy.consolidator import Consolidator
-from textmancy.annotator import Annotator
+from textmancy import Processor, Annotator
 from textmancy.targets import Character
 
 dotenv.load_dotenv()
 
 # Get text and split into pages
-with open("sample_data/christmas_carol.txt", encoding="utf-8") as f:
+with open("sample_data/snows_of_kiliminjaro.txt", encoding="utf-8") as f:
     text = f.read()
     # pages = text.split("\n\n")
-    paragraphs = text.split("\n")
-    pages = [paragraphs[i : i + 10] for i in range(0, len(paragraphs), 10)]
+    paragraphs = [p for p in text.split("\n") if p]
+    pages = ["".join(paragraphs[i : i + 10]) for i in range(0, len(paragraphs), 10)]
 
 # Extract and consolidate characters
-
-extractor = Extractor(
-    target_class=Character,
-    target_num=10,
-    target_examples=[],
-    model="gpt-4-1106-preview",
-)
-
-consolidator = Consolidator(
-    target_class=Character,
-    target_num=10,
-    model="gpt-4-1106-preview",
-)
-
-results = extractor.extract(text, chunk_size=12000, number=3)
-print(f"{len(results)} results found")
-results = consolidator.consolidate(results)
-print(f"{len(results)} results consolidated")
+processor = Processor(target_class=Character)
+results = processor.process(pages)
 
 for r in results:
     print(r)
