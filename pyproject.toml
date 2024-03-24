@@ -18,7 +18,21 @@ pytest = "^7.4.3"
 towncrier = "^23.10.0"
 python-dotenv = "^1.0.0"
 flake8 = "^7.0.0"
+pytest-cov = "^4.1.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+
+[tool.flake8]
+max-line-length = 88
+
+[tool.pytest.ini_options]
+addopts = ["--cov=textmancy", "--cov-report=term-missing"]
+
+[tool.coverage.run]
+omit = ["tests/*", "targets.py", "*/__init__.py"]
+
