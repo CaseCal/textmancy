@@ -1,5 +1,6 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from functools import cached_property
+import logging
 from typing import Generator, Iterable, Sequence, Union
 
 from langchain.prompts import ChatPromptTemplate
@@ -30,6 +31,9 @@ class Extractor:
         target_examples: list = None,
         model: str = "gpt-4",
     ):
+        # Logger
+        self._logger = logging.getLogger(__name__)
+
         # Vars
         self.target_name = target_class.__name__
         self.target_desc = target_class.__doc__
@@ -104,7 +108,6 @@ class Extractor:
             # Input is a stream or generator, process it iteratively
             text_chunk = ""
             for piece in input_data:
-                print(f"Generator returned {piece}")
                 text_chunk += piece
                 if len(text_chunk) >= chunk_size:
                     # Submit the current chunk for processing
@@ -127,6 +130,6 @@ class Extractor:
             # Since the result itself might be a list, we extend our result list with it
             results.extend(result)
             completed += 1
-            print(f"Finished {completed} of {len(futures)}")
+            self._logger.debug(f"Finished {completed} of {len(futures)}")
 
         return results

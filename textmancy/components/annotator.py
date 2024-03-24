@@ -1,6 +1,8 @@
 from concurrent.futures import ThreadPoolExecutor
 from functools import cached_property
+import logging
 from typing import List
+
 
 from langchain.prompts import ChatPromptTemplate
 from langchain.chat_models import ChatOpenAI
@@ -16,6 +18,9 @@ class Annotator:
         targets=List[BaseModel],
         model: str = "gpt-4",
     ):
+        # logger
+        self._logger = logging.getLogger(__name__)
+
         # Vars
         target_class = targets[0].__class__
         self.target_name = target_class.__name__
@@ -83,6 +88,6 @@ class Annotator:
             result = future.result()
             results.extend(result)
             completed += 1
-            print(f"Finished {completed} of {len(futures)}")
+            self._logger.debug(f"Finished {completed} of {len(futures)}")
 
         return set(results)

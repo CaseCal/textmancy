@@ -1,15 +1,22 @@
 import dotenv
-from textmancy import Processor, Annotator
+import logging
+
+from textmancy.components import Processor, Annotator, PageSegmentor
 from textmancy.targets import Character
 
 dotenv.load_dotenv()
 
+# Print logs to stream
+logging.getLogger("textmancy").setLevel(logging.DEBUG)
+logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(name)s: %(message)s")
+
+
 # Get text and split into pages
+segmentor = PageSegmentor(paragraphs_per_page=10)
 with open("sample_data/snows_of_kiliminjaro.txt", encoding="utf-8") as f:
     text = f.read()
-    # pages = text.split("\n\n")
-    paragraphs = [p for p in text.split("\n") if p]
-    pages = ["".join(paragraphs[i : i + 10]) for i in range(0, len(paragraphs), 10)]
+    pages = segmentor.segment(text)
+    # pages = pages[:5]  # Only process first 5 pages for speed
 
 # Extract and consolidate characters
 processor = Processor(target_class=Character)

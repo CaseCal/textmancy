@@ -28,7 +28,6 @@ class Segmentor(ABC):
         Segments the given text into organizational units.
         """
         text_segments = self._segment(text)
-        print(text_segments)
         return self._handle_max_length(text_segments)
 
     def _handle_max_length(self, text_segments: list[str]) -> list[str]:
