@@ -1,0 +1,29 @@
+name: Publish to TestPyPI
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  publish-package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          pipx install poetry
+          poetry install
+
+      - name: Build and publish package
+        run: |
+          poetry config repositories.testpypi https://test.pypi.org/legacy/
+          poetry config pypi-token.testpypi ${{ secrets.TEST_PYPI_PAT }}
+          poetry publish --build --repository testpypi
