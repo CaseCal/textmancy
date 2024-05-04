@@ -5,7 +5,8 @@ def text_generator(
     texts: Iterable[str], max_chunk_size: int
 ) -> Generator[str, None, None]:
     """
-    Given a n iterable of strings, generates a stream that concatenates the strings into chunks of a given size.
+    Given a n iterable of strings, generates a stream that concatenates the strings
+    into chunks of a given size.
 
     """
     next_chunk = ""
