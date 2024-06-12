@@ -30,6 +30,7 @@ class Consolidator:
         model: str = "gpt-4",
         batch_size: int = 10,
         max_iter: int = 3,
+        tolerance: float = 1.5,
         additional_instructions: str = "",
     ):
         # Vars
@@ -39,6 +40,7 @@ class Consolidator:
         self.llm = ChatOpenAI(model=model)
         self.batch_size = batch_size
         self.max_iter = max_iter
+        self.tolerance = tolerance
         self.additional_instructions = additional_instructions
 
         # Grouped class
@@ -99,7 +101,7 @@ class Consolidator:
                 result = future.result()
                 results.extend(result)
 
-        if len(results) >= self.target_num * 1.5 and current_iter < self.max_iter:
+        if len(results) >= self.target_num * self.tolerance and current_iter < self.max_iter:
             return self.consolidate(results, current_iter + 1)
 
         return results
