@@ -20,19 +20,20 @@ class Processor:
     def __init__(
         self,
         target_class: type[BaseModel],
+        target_num: int = 3,
         model: str = "gpt-4-1106-preview",
-        target_num_hint: int = 10,
         extractor_args: dict = {},
         consolidator_args: dict = {}
     ):
         self.extractor = Extractor(
             target_class=target_class,
             model=model,
-            target_num=target_num_hint,
+            target_num=int(target_num * 0.6),  # Extractor extracts 60% of the targets
             **extractor_args)
         self.consolidator = Consolidator(
             target_class=target_class,
             model=model,
+            target_num=target_num,
             **consolidator_args
         )
         self._logger = logging.getLogger(__name__)
