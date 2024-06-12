@@ -22,11 +22,19 @@ class Processor:
         target_class: type[BaseModel],
         model: str = "gpt-4-1106-preview",
         target_num_hint: int = 10,
+        extractor_args: dict = {},
+        consolidator_args: dict = {}
     ):
         self.extractor = Extractor(
-            target_class=target_class, model=model, target_num=target_num_hint
+            target_class=target_class,
+            model=model,
+            target_num=target_num_hint,
+            **extractor_args)
+        self.consolidator = Consolidator(
+            target_class=target_class,
+            model=model,
+            **consolidator_args
         )
-        self.consolidator = Consolidator(target_class=target_class, model=model)
         self._logger = logging.getLogger(__name__)
 
     def process(self, texts: list[str]) -> TextmancyResult:
