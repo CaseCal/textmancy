@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "textmancy"
-version = "0.1.0"
+version = "0.2.0"
 description = "LLM-driven package for mapping, analyzing and expanding text works."
 authors = ["Caleb Case <caleb.case93@gmail.com>"]
 license = "MIT"
