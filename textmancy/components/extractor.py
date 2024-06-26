@@ -30,6 +30,7 @@ class Extractor:
         target_num: int = 3,
         target_examples: list = None,
         model: str = "gpt-4",
+        additional_instructions: str = "",
     ):
         # Logger
         self._logger = logging.getLogger(__name__)
@@ -40,6 +41,7 @@ class Extractor:
         self.target_num = target_num
         self.target_examples = target_examples or []
         self.llm = ChatOpenAI(model=model)
+        self.additional_instructions = additional_instructions
 
         # Grouped class
         fields = {
@@ -55,12 +57,14 @@ class Extractor:
     @cached_property
     def _extraction_prompt(self) -> ChatPromptTemplate:
         prompt = (
-            f"You are a literary analyst. Your job is to determine any {self.target_name}s "
+            "You are an ethnographer. This is the first stage of classification."
+            f"Your job is to determine any {self.target_name}s "
             "present in a given text."
             f"{self.target_name} is defined as {self.target_desc}"
             "Here is the text: \n {text}"
             f"\n Please determine any {self.target_name}s present in the text. "
             f"Look for around {{target_num}} {self.target_name}s."
+            f"\n {self.additional_instructions}"
         )
         if self.target_examples:
             prompt += f"\n ex: {self.target_examples}"

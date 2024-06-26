@@ -30,6 +30,8 @@ class Consolidator:
         model: str = "gpt-4",
         batch_size: int = 10,
         max_iter: int = 3,
+        tolerance: float = 1.5,
+        additional_instructions: str = "",
     ):
         # Vars
         self.target_name = target_class.__name__
@@ -38,6 +40,8 @@ class Consolidator:
         self.llm = ChatOpenAI(model=model)
         self.batch_size = batch_size
         self.max_iter = max_iter
+        self.tolerance = tolerance
+        self.additional_instructions = additional_instructions
 
         # Grouped class
         fields = {
@@ -56,12 +60,15 @@ class Consolidator:
     @cached_property
     def _consolidation_prompt(self) -> ChatPromptTemplate:
         return ChatPromptTemplate.from_template(
+            "You are an ethnographer. In this stage, text has been freely classified."
+            "You are now consoldiating various annotations to create a final list."
             f"Please consolidate the following {self.target_name}s into a list: \n"
             + "{targets}"
             + f"\n Consolidate into {self.target_num} {self.target_name}s."
             + f"Where possible, combine similar {self.target_name}s into one."
             + f"Look for cases where the same {self.target_name} is referred to by "
-            + "different names. Ex: The Woman and Helen."
+            + "different names. Avoid repition and redundancy."
+            + f"\n {self.additional_instructions}"
         )
 
     def _create_consolidation_chain(self):
@@ -94,7 +101,7 @@ class Consolidator:
                 result = future.result()
                 results.extend(result)
 
-        if len(results) >= self.target_num * 1.5 and current_iter < self.max_iter:
+        if len(results) >= self.target_num * self.tolerance and current_iter < self.max_iter:
             return self.consolidate(results, current_iter + 1)
 
         return results
