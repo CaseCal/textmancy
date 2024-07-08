@@ -1,6 +1,5 @@
 import dotenv
 import logging
-import warnings
 
 from textmancy.components import Processor, Annotator, PageSegmentor
 from textmancy.targets import Character
@@ -11,8 +10,6 @@ dotenv.load_dotenv()
 logging.getLogger("textmancy").setLevel(logging.INFO)
 logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(name)s: %(message)s")
 
-# Convert DeprecationWarnings into exceptions
-# warnings.simplefilter("error", DeprecationWarning)
 
 # Get text and split into pages
 segmentor = PageSegmentor(paragraphs_per_page=10)
