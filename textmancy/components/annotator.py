@@ -3,7 +3,6 @@ from functools import cached_property
 import logging
 from typing import List
 
-
 from langchain.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain.chains.openai_functions import (
@@ -16,7 +15,7 @@ class Annotator:
     def __init__(
         self,
         targets=List[BaseModel],
-        model: str = "gpt-4",
+        model: str = "gpt-4o",
     ):
         # logger
         self._logger = logging.getLogger(__name__)

@@ -18,7 +18,7 @@ class Consolidator:
         target_class (type[BaseModel]): The class of the target objects.
         target_num (int, optional): The desired number of target objects in the grouped list.
             Defaults to 3.
-        model (str, optional): The model to use for consolidation. Defaults to "gpt-4".
+        model (str, optional): The model to use for consolidation. Defaults to "gpt-4o".
         batch_size (int, optional): The batch size for processing the target objects.
             Defaults to 10.
     """
@@ -27,7 +27,7 @@ class Consolidator:
         self,
         target_class: type[BaseModel],
         target_num: int = 3,
-        model: str = "gpt-4",
+        model: str = "gpt-4o",
         batch_size: int = 10,
         max_iter: int = 3,
         tolerance: float = 1.5,

@@ -29,7 +29,7 @@ class Extractor:
         target_class: type[BaseModel],
         target_num: int = 3,
         target_examples: list = None,
-        model: str = "gpt-4",
+        model: str = "gpt-4o",
         additional_instructions: str = "",
     ):
         # Logger
