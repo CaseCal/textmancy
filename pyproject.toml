@@ -8,10 +8,9 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-langchain = "^0.0.331"
-openai = "0.28.0"
+langchain = "^0.2.6"
 thefuzz = "^0.20.0"
-bump2version = "^1.0.1"
+langchain-openai = "^0.1.14"
 
 [tool.poetry.group.dev.dependencies]
 bump2version = "^1.0.1"
@@ -36,4 +35,3 @@ addopts = ["--cov=textmancy", "--cov-report=term-missing"]
 
 [tool.coverage.run]
 omit = ["tests/*", "targets.py", "*/__init__.py"]
-

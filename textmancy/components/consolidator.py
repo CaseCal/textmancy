@@ -3,7 +3,7 @@ from functools import cached_property
 from typing import List, Sequence
 
 from langchain.prompts import ChatPromptTemplate
-from langchain.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 from langchain.chains.openai_functions import (
     create_structured_output_runnable,
 )
@@ -101,7 +101,10 @@ class Consolidator:
                 result = future.result()
                 results.extend(result)
 
-        if len(results) >= self.target_num * self.tolerance and current_iter < self.max_iter:
+        if (
+            len(results) >= self.target_num * self.tolerance
+            and current_iter < self.max_iter
+        ):
             return self.consolidate(results, current_iter + 1)
 
         return results
