@@ -1,5 +1,6 @@
 import dotenv
 import logging
+import warnings
 
 from textmancy.components import Processor, Annotator, PageSegmentor
 from textmancy.targets import Character
@@ -7,9 +8,11 @@ from textmancy.targets import Character
 dotenv.load_dotenv()
 
 # Print logs to stream
-logging.getLogger("textmancy").setLevel(logging.DEBUG)
+logging.getLogger("textmancy").setLevel(logging.INFO)
 logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(name)s: %(message)s")
 
+# Convert DeprecationWarnings into exceptions
+# warnings.simplefilter("error", DeprecationWarning)
 
 # Get text and split into pages
 segmentor = PageSegmentor(paragraphs_per_page=10)
@@ -30,7 +33,7 @@ for r in results:
 # Annotate pages with characters
 annotater = Annotator(
     targets=results,
-    model="gpt-4-1106-preview",
+    model="gpt-4o",
 )
 annotations = [annotater.annotate(page) for page in pages[:5]]
 
