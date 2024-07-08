@@ -7,7 +7,7 @@ from textmancy.targets import Character
 dotenv.load_dotenv()
 
 # Print logs to stream
-logging.getLogger("textmancy").setLevel(logging.DEBUG)
+logging.getLogger("textmancy").setLevel(logging.INFO)
 logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(name)s: %(message)s")
 
 
@@ -30,7 +30,7 @@ for r in results:
 # Annotate pages with characters
 annotater = Annotator(
     targets=results,
-    model="gpt-4-1106-preview",
+    model="gpt-4o",
 )
 annotations = [annotater.annotate(page) for page in pages[:5]]
 
