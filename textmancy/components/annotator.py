@@ -62,7 +62,6 @@ class Annotator:
                 },
             },
         }
-        print(self.json_schema)
 
         # Create runnable
         prompt = self._create_annotation_prompt()
@@ -89,6 +88,8 @@ class Annotator:
             list: The list of target indices found in the text chunk.
         """
         result = self.annotation_runnable.invoke({"text": text})
+        if not result:
+            return []
         return result["indices"]
 
     def annotate(self, text: str, chunk_size=4000, **kwargs) -> set:
