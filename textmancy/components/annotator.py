@@ -121,4 +121,9 @@ class Annotator:
             completed += 1
             self._logger.debug(f"Finished {completed} of {len(futures)}")
 
-        return set(results)
+        # Clean results for only valdi indices
+        return {
+            int(i)
+            for i in results
+            if i is not None and i < len(self.targets) and i >= 0
+        }
