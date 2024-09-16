@@ -19,6 +19,11 @@ towncrier = "^23.10.0"
 python-dotenv = "^1.0.0"
 flake8 = "^7.0.0"
 pytest-cov = "^4.1.0"
+ipykernel = "^6.29.5"
+
+
+[tool.poetry.group.benchmark.dependencies]
+pandas = "^2.2.2"
 
 [build-system]
 requires = ["poetry-core"]
