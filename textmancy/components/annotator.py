@@ -1,6 +1,6 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import logging
-from typing import List
+from typing import List, Set
 
 from langchain.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
@@ -92,16 +92,16 @@ class Annotator:
             return []
         return result["indices"]
 
-    def annotate(self, text: str, chunk_size=4000, **kwargs) -> set:
+    def annotate(self, text: str, chunk_size=4000, **kwargs) -> Set[BaseModel]:
         """
-        Annotates the given text to identify target indices.
+        Annotates the given text to identify targets
 
         Args:
             text (str): The text to annotate.
             chunk_size (int, optional): The size of text chunks for annotation. Defaults to 4000.
 
         Returns:
-            set: A set of unique target indices found in the text.
+            set: A set of unique targets found in the text.
         """
         pool = ThreadPoolExecutor(max_workers=10)
         futures = []
@@ -121,9 +121,6 @@ class Annotator:
             completed += 1
             self._logger.debug(f"Finished {completed} of {len(futures)}")
 
-        # Clean results for only valdi indices
-        return {
-            int(i)
-            for i in results
-            if i is not None and i < len(self.targets) and i >= 0
-        }
+        # Clean results for only valid indices
+        result_indices = {i for i in results if i is not None and i < len(self.targets)}
+        return [self.targets[i] for i in result_indices]
