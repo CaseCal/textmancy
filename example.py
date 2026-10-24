@@ -1,7 +1,8 @@
-import dotenv
 import logging
 
-from textmancy.components import Processor, Annotator, PageSegmentor
+import dotenv
+
+from textmancy.components import Annotator, PageSegmentor, Processor
 from textmancy.targets import Character
 
 dotenv.load_dotenv()

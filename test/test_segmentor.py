@@ -1,6 +1,6 @@
-from textmancy.components.segmentor import Segmentor, ParagraphSegmentor, PageSegmentor
-
 import pytest
+
+from textmancy.components.segmentor import PageSegmentor, ParagraphSegmentor, Segmentor
 
 
 class SampleSegmentor(Segmentor):
@@ -8,11 +8,9 @@ class SampleSegmentor(Segmentor):
         return [p for p in text.split(" ") if p]
 
 
-@pytest.mark.parametrize("max_length, handle_length", [
-    (10, "split"),
-    (20, "truncate"),
-    (30, "raise")
-])
+@pytest.mark.parametrize(
+    "max_length, handle_length", [(10, "split"), (20, "truncate"), (30, "raise")]
+)
 def test_segmentor_init(max_length, handle_length):
     segmentor = SampleSegmentor(max_length=max_length, handle_length=handle_length)
     assert segmentor._max_length == max_length
@@ -78,11 +76,11 @@ def test_page_segmentor_single_page():
 def test_page_segmentor_multiple_pages():
     segmentor = PageSegmentor(paragraphs_per_page=2)
     text = (
-            "This is the first para.\nThis is the second para.\n"
-            "This is the third para.\nThis is the fourth para.\n"
+        "This is the first para.\nThis is the second para.\n"
+        "This is the third para.\nThis is the fourth para.\n"
     )
     expected_output = [
         "This is the first para.\nThis is the second para.",
-        "This is the third para.\nThis is the fourth para."
+        "This is the third para.\nThis is the fourth para.",
     ]
     assert segmentor.segment(text) == expected_output

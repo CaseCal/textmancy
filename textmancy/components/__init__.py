@@ -2,7 +2,7 @@ from .annotator import Annotator
 from .consolidator import Consolidator
 from .extractor import Extractor
 from .processor import Processor
-from .segmentor import ParagraphSegmentor, PageSegmentor
+from .segmentor import PageSegmentor, ParagraphSegmentor
 
 __all__ = [
     "Annotator",
@@ -10,5 +10,5 @@ __all__ = [
     "Extractor",
     "Processor",
     "ParagraphSegmentor",
-    "PageSegmentor"
+    "PageSegmentor",
 ]

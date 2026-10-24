@@ -2,9 +2,9 @@ import logging
 
 from langchain.pydantic_v1 import BaseModel
 
+from .. import utils
 from .consolidator import Consolidator
 from .extractor import Extractor
-from .. import utils
 
 
 class TextmancyResult(BaseModel):

@@ -19,16 +19,20 @@ towncrier = "^23.10.0"
 python-dotenv = "^1.0.0"
 flake8 = "^7.0.0"
 pytest-cov = "^4.1.0"
+pre-commit = "^3.7.0"
+black = "^24.4.2"
+isort = "^5.13.2"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.black]
-line-length = 88
+line-length = 100
 
-[tool.flake8]
-max-line-length = 88
+[tool.isort]
+profile = "black"
+line_length = 100
 
 [tool.pytest.ini_options]
 addopts = ["--cov=textmancy", "--cov-report=term-missing"]

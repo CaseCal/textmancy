@@ -1,10 +1,10 @@
-from concurrent.futures import ThreadPoolExecutor, as_completed
 import logging
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List
 
 from langchain.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
 from langchain.pydantic_v1 import BaseModel
+from langchain_openai import ChatOpenAI
 
 
 class Annotator:
@@ -65,9 +65,9 @@ class Annotator:
 
         # Create runnable
         prompt = self._create_annotation_prompt()
-        self.annotation_runnable = prompt | ChatOpenAI(
-            model=model
-        ).with_structured_output(self.json_schema)
+        self.annotation_runnable = prompt | ChatOpenAI(model=model).with_structured_output(
+            self.json_schema
+        )
 
     def _create_annotation_prompt(self) -> ChatPromptTemplate:
         return ChatPromptTemplate.from_template(
@@ -122,8 +122,4 @@ class Annotator:
             self._logger.debug(f"Finished {completed} of {len(futures)}")
 
         # Clean results for only valdi indices
-        return {
-            int(i)
-            for i in results
-            if i is not None and i < len(self.targets) and i >= 0
-        }
+        return {int(i) for i in results if i is not None and i < len(self.targets) and i >= 0}

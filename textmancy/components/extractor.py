@@ -1,10 +1,10 @@
-from concurrent.futures import ThreadPoolExecutor, as_completed
 import logging
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Generator, Iterable, List, Optional, Sequence, Union
 
 from langchain.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
 from langchain.pydantic_v1 import BaseModel, Field, create_model
+from langchain_openai import ChatOpenAI
 
 
 class Extractor:
@@ -48,9 +48,9 @@ class Extractor:
         prompt = self._create_extraction_prompt(
             target_class, additional_instructions, target_examples
         )
-        self.extraction_runnable = prompt | ChatOpenAI(
-            model=model
-        ).with_structured_output(self.grouped_target_type)
+        self.extraction_runnable = prompt | ChatOpenAI(model=model).with_structured_output(
+            self.grouped_target_type
+        )
 
     @classmethod
     def _create_extraction_prompt(
@@ -99,9 +99,7 @@ class Extractor:
             # Input is a string, process it in chunks
             for i in range(0, len(input_data), chunk_size):
                 text_chunk = input_data[i : i + chunk_size]
-                futures.append(
-                    pool.submit(self._extract_from_block, text_chunk, **kwargs)
-                )
+                futures.append(pool.submit(self._extract_from_block, text_chunk, **kwargs))
         else:
             # Input is a stream or generator, process it iteratively
             text_chunk = ""
@@ -109,15 +107,11 @@ class Extractor:
                 text_chunk += piece
                 if len(text_chunk) >= chunk_size:
                     # Submit the current chunk for processing
-                    futures.append(
-                        pool.submit(self._extract_from_block, text_chunk, **kwargs)
-                    )
+                    futures.append(pool.submit(self._extract_from_block, text_chunk, **kwargs))
                     text_chunk = ""
             # Make sure to process the last chunk if it's not empty
             if text_chunk:
-                futures.append(
-                    pool.submit(self._extract_from_block, text_chunk, **kwargs)
-                )
+                futures.append(pool.submit(self._extract_from_block, text_chunk, **kwargs))
 
         # Retrieve results as they complete
         results = []

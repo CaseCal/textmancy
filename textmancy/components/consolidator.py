@@ -1,10 +1,10 @@
-from concurrent.futures import ThreadPoolExecutor, as_completed
 import logging
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List, Optional, Sequence, Type
 
 from langchain.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
 from langchain.pydantic_v1 import BaseModel, Field, create_model
+from langchain_openai import ChatOpenAI
 
 
 class Consolidator:
@@ -53,12 +53,10 @@ class Consolidator:
         self.grouped_target_type.__doc__ = f"A list of {self.target_name}s"
 
         # Create runnable
-        prompt = self._create_consolidation_prompt(
-            target_class, additional_instructions
+        prompt = self._create_consolidation_prompt(target_class, additional_instructions)
+        self.consolidation_runnable = prompt | ChatOpenAI(model=model).with_structured_output(
+            self.grouped_target_type
         )
-        self.consolidation_runnable = prompt | ChatOpenAI(
-            model=model
-        ).with_structured_output(self.grouped_target_type)
 
     @classmethod
     def _create_consolidation_prompt(
@@ -103,24 +101,16 @@ class Consolidator:
         Returns:
             list: The consolidated grouped list of target objects.
         """
-        batches = [
-            items[i : i + self.batch_size]
-            for i in range(0, len(items), self.batch_size)
-        ]
+        batches = [items[i : i + self.batch_size] for i in range(0, len(items), self.batch_size)]
 
         with ThreadPoolExecutor(max_workers=10) as executor:
-            futures = [
-                executor.submit(self._consolidate_batch, batch) for batch in batches
-            ]
+            futures = [executor.submit(self._consolidate_batch, batch) for batch in batches]
             results = []
             for future in as_completed(futures):
                 result = future.result()
                 results.extend(result)
 
-        if (
-            len(results) >= self.target_num * self.tolerance
-            and current_iter < self.max_iter
-        ):
+        if len(results) >= self.target_num * self.tolerance and current_iter < self.max_iter:
             return self.consolidate(results, current_iter + 1)
 
         return results

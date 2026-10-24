@@ -41,9 +41,7 @@ class Segmentor(ABC):
         for i, segment in enumerate(text_segments):
             if len(segment) > self._max_length:
                 if self._handle_length == "split":
-                    segments.extend(
-                        (segment[0: self._max_length], segment[self._max_length:])
-                    )
+                    segments.extend((segment[0 : self._max_length], segment[self._max_length :]))
                 elif self._handle_length == "truncate":
                     segments.append(segment[: self._max_length])
                 elif self._handle_length == "raise":
