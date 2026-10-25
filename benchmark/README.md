@@ -7,7 +7,8 @@ extraction variance. It is run by hand, not by `pytest`, because it calls paid A
 ## Prerequisites
 
 Put provider keys in `.env` at the repo root: `ANTHROPIC_API_KEY` for silver labeling and
-`OPENAI_API_KEY` for the `openai:gpt-4o` baseline.
+`OPENAI_API_KEY` for the `openai:gpt-4o` baseline, and `TYPESAFE_API_KEY` for `JevAnnotator`
+(install with `poetry install --all-extras`).
 
 ## Workflow
 
@@ -31,6 +32,7 @@ Put provider keys in `.env` at the repo root: `ANTHROPIC_API_KEY` for silver lab
 
    ```bash
    poetry run python -m benchmark.run --annotator llm --model openai:gpt-4o
+   poetry run python -m benchmark.run --annotator jev --model jev-latest
    ```
 
    `run.py` refuses to run while any disagreement page is unreviewed, or while any page's
@@ -71,13 +73,13 @@ fixed, seeded subset of pages (`null` means every page). `targets` are hand-cura
 - Wall-clock latency, total and mean per page.
 - Token usage and estimated cost.
 - Annotators that expose `annotate_scores_async` are swept over thresholds 0.10–0.90 (step
-  0.05) and every aggregator. Their precision, recall, and F1 are 2-fold cross-validated:
-  pages alternate between two folds (so each fold spans every dataset), and each fold is
-  scored with the best configuration on the other fold. Tuning and scoring on the same pages
-  would inflate F1. The best configuration on all pages is reported as the one to use, and the
-  results JSON also saves its (optimistic) in-sample F1, the per-fold configurations, the full
-  PR curve, and every page's per-chunk scores, so the metrics can be recomputed without
-  re-running the annotator.
+  0.05) and every aggregator (`max`, `mean`, and `noisy_or` with its 0.2 floor). Their
+  precision, recall, and F1 are 2-fold cross-validated: pages alternate between two folds (so
+  each fold spans every dataset), and each fold is scored with the best configuration on the
+  other fold. Tuning and scoring on the same pages would inflate F1. The best configuration on
+  all pages is reported as the one to use, and the results JSON also saves its (optimistic)
+  in-sample F1, the per-fold configurations, the full PR curve, and every page's per-chunk
+  scores, so the metrics can be recomputed without re-running the annotator.
 
 ## Acceptance bar
 

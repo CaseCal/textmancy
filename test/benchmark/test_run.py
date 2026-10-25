@@ -134,7 +134,7 @@ def test_run_sweeps_score_returning_annotator(tmp_path):
     result = run_sync(run_benchmark_async([dataset], {"book": annotator}))
 
     assert len(annotator.calls) == 2
-    assert set(result["sweep"]) == {"max", "mean"}
+    assert set(result["sweep"]) == {"max", "mean", "noisy_or"}
     assert len(result["sweep"]["max"]) == 17
     assert result["best_config"] == {"aggregator": "max", "threshold": 0.1}
     assert result["metrics"]["overall"]["f1"] == pytest.approx(1.0)
@@ -187,6 +187,26 @@ def test_run_scores_each_chunk_separately(tmp_path):
     run_sync(run_benchmark_async([dataset], {"book": annotator}, chunk_size=4))
 
     assert annotator.calls[:3] == ["Ann ", "walk", "s."]
+
+
+def test_jev_annotator_is_swept(tmp_path):
+    from types import SimpleNamespace
+
+    from textmancy.components import JevAnnotator
+
+    class FakeClient:
+        async def system_one(self, state, questions, *, model=None):
+            names = {"target_0": "Ann", "target_1": "Bob"}
+            nouls = {q: SimpleNamespace(noul=0.8 if names[q] in state else 0.1) for q in questions}
+            return SimpleNamespace(nouls=nouls)
+
+    dataset = make_dataset(tmp_path)
+    annotator = JevAnnotator(dataset.target_objects(), client=FakeClient())
+
+    result = run_sync(run_benchmark_async([dataset], {"book": annotator}))
+
+    assert result["metrics"]["overall"]["f1"] == pytest.approx(1.0)
+    assert result["best_config"]["aggregator"] == "max"
 
 
 def test_result_path_slugs_model():
