@@ -1,4 +1,8 @@
-from textmancy.utils import text_generator
+import asyncio
+
+import pytest
+
+from textmancy.utils import chunk_input, gather_bounded, run_sync, text_generator
 
 
 def test_text_generator():
@@ -39,3 +43,52 @@ def test_text_generator_with_empty_input():
     output = list(generator)
 
     assert output == expected_output
+
+
+def test_chunk_input_slices_strings():
+    assert chunk_input("aaaabbbbcc", 4) == ["aaaa", "bbbb", "cc"]
+
+
+def test_chunk_input_empty_string():
+    assert chunk_input("", 4) == []
+
+
+def test_chunk_input_accumulates_iterables_and_flushes_remainder():
+    assert chunk_input(iter(["ab", "cd", "ef", "g"]), 4) == ["abcd", "efg"]
+
+
+async def _value(value):
+    return value
+
+
+def test_run_sync_returns_result():
+    assert run_sync(_value(42)) == 42
+
+
+def test_run_sync_inside_running_loop_raises():
+    async def outer():
+        with pytest.raises(RuntimeError, match="_async"):
+            run_sync(_value(1))
+
+    asyncio.run(outer())
+
+
+def test_gather_bounded_respects_limit_and_preserves_order():
+    state = {"active": 0, "peak": 0}
+
+    async def work(i):
+        state["active"] += 1
+        state["peak"] = max(state["peak"], state["active"])
+        await asyncio.sleep(0.01 * (5 - i))
+        state["active"] -= 1
+        return i
+
+    result = asyncio.run(gather_bounded([work(i) for i in range(5)], limit=2))
+
+    assert result == [0, 1, 2, 3, 4]
+    assert state["peak"] == 2
+
+
+def test_gather_bounded_rejects_non_positive_limit():
+    with pytest.raises(ValueError, match="limit"):
+        asyncio.run(gather_bounded([], limit=0))
