@@ -2,7 +2,7 @@ import logging
 
 import dotenv
 
-from textmancy.components import Annotator, PageSegmentor, Processor
+from textmancy.components import LLMAnnotator, PageSegmentor, Processor
 from textmancy.targets import Character
 
 dotenv.load_dotenv()
@@ -29,9 +29,9 @@ for r in results:
 
 
 # Annotate pages with characters
-annotater = Annotator(
+annotater = LLMAnnotator(
     targets=results,
-    model="gpt-4o",
+    model="openai:gpt-4o",
 )
 annotations = [annotater.annotate(page) for page in pages[:5]]
 

@@ -8,9 +8,14 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-langchain = "^0.2.6"
 thefuzz = "^0.20.0"
-langchain-openai = "^0.1.14"
+pydantic-ai-slim = {version = "^2.54.0", extras = ["openai"]}
+anthropic = {version = ">=1.9.0", optional = true}
+google-genai = {version = ">=2.25.0", optional = true}
+
+[tool.poetry.extras]
+anthropic = ["anthropic"]
+google = ["google-genai"]
 
 [tool.poetry.group.dev.dependencies]
 bump2version = "^1.0.1"

@@ -1,127 +1,110 @@
+import json
 import logging
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Generator, Iterable, List, Optional, Sequence, Union
+from typing import Iterable, Optional, Union
 
-from langchain.prompts import ChatPromptTemplate
-from langchain.pydantic_v1 import BaseModel, Field, create_model
-from langchain_openai import ChatOpenAI
+from pydantic import BaseModel
+from pydantic_ai import Agent
+from pydantic_ai.models import Model
+
+from .. import utils
 
 
 class Extractor:
     """
-    A class for extracting information from a given text using a language chain.
+    Extracts target objects from text using an LLM.
 
     Attributes:
         target_class (type[BaseModel]): The class of the target to extract from the text.
-        target_num (int): The expected number of targets to extract from the text.
-        target_examples (list): A list of examples of the target to extract from the text.
+        target_num (int): The expected number of targets to extract per chunk.
+        agent (Agent): The Pydantic AI agent that performs extraction.
     """
 
     def __init__(
         self,
         target_class: type[BaseModel],
         target_num: int = 3,
-        target_examples: list = None,
-        model: str = "gpt-4o",
+        target_examples: Optional[list[BaseModel]] = None,
+        model: Union[str, Model] = "openai-chat:gpt-4o",
         additional_instructions: str = "",
+        max_concurrency: int = 10,
+        retries: int = 1,
     ):
-        # Logger
         self._logger = logging.getLogger(__name__)
 
-        # Vars
         self.target_class = target_class
         self.target_num = target_num
-        self.target_examples = target_examples or []
         self.target_name = target_class.__name__
+        self.max_concurrency = max_concurrency
 
-        # Grouped class
-        fields = {
-            f"{self.target_name}s": (
-                Sequence[target_class],
-                Field(..., description=f"A list of {self.target_name}s"),
+        self.agent = Agent(
+            model,
+            output_type=list[target_class],
+            system_prompt=self._create_system_prompt(
+                target_class, additional_instructions, target_examples
             ),
-        }
-        self.grouped_target_type = create_model(f"{self.target_name}s", **fields)
-        self.grouped_target_type.__doc__ = f"A list of {self.target_name}s"
-
-        # Create runnable
-        prompt = self._create_extraction_prompt(
-            target_class, additional_instructions, target_examples
-        )
-        self.extraction_runnable = prompt | ChatOpenAI(model=model).with_structured_output(
-            self.grouped_target_type
+            retries=retries,
+            defer_model_check=True,
         )
 
-    @classmethod
-    def _create_extraction_prompt(
-        cls,
+    @staticmethod
+    def _create_system_prompt(
         target_class: type[BaseModel],
-        additional_instructions: Optional[str] = None,
-        examples: Optional[List[BaseModel]] = None,
-    ) -> ChatPromptTemplate:
+        additional_instructions: str = "",
+        examples: Optional[list[BaseModel]] = None,
+    ) -> str:
+        name = target_class.__name__
         prompt = (
-            "You are an ethnographer. This is the first stage of classification."
-            f"Your job is to determine any {target_class.__name__}s "
-            "present in a given text."
-            f"{target_class.__name__} is defined as {target_class.__doc__}"
-            "Here is the text: \n {text}"
-            f"\n Please determine any {target_class.__name__}s present in the text. "
-            f"Look for around {{target_num}} {target_class.__name__}s."
-            f"\n {additional_instructions}"
+            "You are an ethnographer. This is the first stage of classification. "
+            f"Your job is to determine any {name}s present in a given text. "
+            f"{name} is defined as: {target_class.__doc__}"
         )
+        if additional_instructions:
+            prompt += f"\n{additional_instructions}"
         if examples:
-            prompt += f"\n ex: {[e.dict() for e in examples]}"
+            prompt += f"\nExamples: {json.dumps([e.model_dump(mode='json') for e in examples])}"
+        return prompt
 
-        return ChatPromptTemplate.from_template(prompt)
+    async def _extract_from_block_async(
+        self, text: str, number: Optional[int] = None
+    ) -> list[BaseModel]:
+        n = number or self.target_num
+        result = await self.agent.run(f"Text:\n{text}\n\nLook for around {n} {self.target_name}s.")
+        return result.output or []
 
-    def _extract_from_block(self, text: str, number: int = None) -> list:
+    async def extract_async(
+        self,
+        input_data: Union[str, Iterable[str]],
+        chunk_size: int = 4000,
+        number: Optional[int] = None,
+    ) -> list[BaseModel]:
         """
-        Extracts information from the given text using the language chain.
+        Extracts targets from a string or a stream of strings.
 
         Args:
-            text (str): The text to extract information from.
+            input_data: A string (sliced into chunk_size pieces) or an iterable of strings
+                (accumulated into chunks of at least chunk_size).
+            chunk_size: The chunk size in characters.
+            number: Overrides target_num for this call.
 
         Returns:
-            list: A list of extracted information from the given text.
+            All extracted targets, in chunk order.
         """
-        result = self.extraction_runnable.invoke(
-            {"text": text, "target_num": number or self.target_num}
-        )
-        return getattr(result, self.target_name + "s")
+        chunks = utils.chunk_input(input_data, chunk_size)
+        # Entering the agent resolves a model string once per call and opens the provider's HTTP
+        # client on the running loop, closing it on exit.
+        async with self.agent:
+            results = await utils.gather_bounded(
+                (self._extract_from_block_async(chunk, number) for chunk in chunks),
+                self.max_concurrency,
+            )
+        self._logger.debug(f"Extracted from {len(chunks)} chunks")
+        return [target for chunk_result in results for target in chunk_result]
 
     def extract(
-        self, input_data: Union[str, Iterable, Generator], chunk_size=4000, **kwargs
-    ) -> list:
-        pool = ThreadPoolExecutor(max_workers=10)
-        futures = []
-
-        if isinstance(input_data, str):
-            # Input is a string, process it in chunks
-            for i in range(0, len(input_data), chunk_size):
-                text_chunk = input_data[i : i + chunk_size]
-                futures.append(pool.submit(self._extract_from_block, text_chunk, **kwargs))
-        else:
-            # Input is a stream or generator, process it iteratively
-            text_chunk = ""
-            for piece in input_data:
-                text_chunk += piece
-                if len(text_chunk) >= chunk_size:
-                    # Submit the current chunk for processing
-                    futures.append(pool.submit(self._extract_from_block, text_chunk, **kwargs))
-                    text_chunk = ""
-            # Make sure to process the last chunk if it's not empty
-            if text_chunk:
-                futures.append(pool.submit(self._extract_from_block, text_chunk, **kwargs))
-
-        # Retrieve results as they complete
-        results = []
-        completed = 0
-        for future in as_completed(futures):
-            # Get the result of the future
-            result = future.result()
-            # Since the result itself might be a list, we extend our result list with it
-            results.extend(result)
-            completed += 1
-            self._logger.debug(f"Finished {completed} of {len(futures)}")
-
-        return results
+        self,
+        input_data: Union[str, Iterable[str]],
+        chunk_size: int = 4000,
+        number: Optional[int] = None,
+    ) -> list[BaseModel]:
+        """Synchronous wrapper for extract_async."""
+        return utils.run_sync(self.extract_async(input_data, chunk_size, number))

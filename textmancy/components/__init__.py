@@ -1,4 +1,4 @@
-from .annotator import Annotator
+from .annotators import Annotator, LLMAnnotator
 from .consolidator import Consolidator
 from .extractor import Extractor
 from .processor import Processor
@@ -8,6 +8,7 @@ __all__ = [
     "Annotator",
     "Consolidator",
     "Extractor",
+    "LLMAnnotator",
     "Processor",
     "ParagraphSegmentor",
     "PageSegmentor",

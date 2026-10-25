@@ -1,17 +1,17 @@
 from typing import List
 
-from langchain.pydantic_v1 import BaseModel, Field
+from pydantic import BaseModel, Field
 
 
 class Theme(BaseModel):
-    """ "A recurring idea or concept in a work of literature"""
+    """A recurring idea or concept in a work of literature"""
 
     name: str = Field(
         ..., description="The name of the theme. Ex: Death and Mortality, Regret, etc."
     )
     reasoning: str = Field(
         ...,
-        description="The reasoning behind the theme occuring in a specific peice of text",
+        description="The reasoning behind the theme occurring in a specific piece of text",
     )
 
 
