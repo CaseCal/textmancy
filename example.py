@@ -41,3 +41,12 @@ for page, annotation in zip(pages, annotations):
     print(annotation)
     print([results[i].name for i in annotation])
     print()
+
+
+# Annotate with TypeSafe's Jev classifier instead (pip install "textmancy[jev]", TYPESAFE_API_KEY)
+# from textmancy.components import JevAnnotator
+#
+# jev = JevAnnotator(targets=results, threshold=0.5, aggregate="max")
+# for page in pages[:5]:
+#     scores = jev.annotate_scores(page)
+#     print({results[i].name: round(p, 2) for i, p in scores.items() if p >= 0.2})

@@ -18,12 +18,13 @@ from typing import Callable, Mapping, Sequence
 import dotenv
 from pydantic import BaseModel
 
-from textmancy.components import Annotator, LLMAnnotator
+from textmancy.components import Annotator, JevAnnotator, LLMAnnotator
+from textmancy.components.annotators.aggregation import max_, mean, noisy_or
 from textmancy.utils import chunk_input, gather_bounded
 
 from .dataset import REPO_ROOT, GoldDataset, gold_digest, load_dataset, select_dataset_paths
 from .metrics import Aggregator, best_config, cross_validate, predict, score, sweep
-from .usage import UsageTracker, UsageTrackingModel, estimate_cost
+from .usage import UsageTracker, UsageTrackingClient, UsageTrackingModel, estimate_cost
 
 RESULTS_DIR = REPO_ROOT / "benchmark" / "results"
 RESULTS_MD = REPO_ROOT / "benchmark" / "RESULTS.md"
@@ -31,14 +32,24 @@ BASELINE = ("llm", "openai:gpt-4o")
 ACCEPTANCE_DELTA = 0.05
 FOLDS = 2
 
-# Score-returning annotators are swept over these. Issue #8 swaps in the library's built-ins.
-DEFAULT_AGGREGATORS: dict[str, Aggregator] = {"max": max, "mean": statistics.fmean}
+# Score-returning annotators are swept over these (noisy_or uses its default 0.2 floor).
+DEFAULT_AGGREGATORS: dict[str, Aggregator] = {"max": max_, "mean": mean, "noisy_or": noisy_or}
+
+
+def _jev(targets: list[BaseModel], model: str, tracker: UsageTracker) -> JevAnnotator:
+    from typesafe_sdk import AsyncTypeSafeClient
+
+    return JevAnnotator(
+        targets, model=model, client=UsageTrackingClient(AsyncTypeSafeClient(), tracker)
+    )
+
 
 AnnotatorFactory = Callable[[list[BaseModel], str, UsageTracker], Annotator]
 ANNOTATORS: dict[str, AnnotatorFactory] = {
     "llm": lambda targets, model, tracker: LLMAnnotator(
         targets, model=UsageTrackingModel(model, tracker)
     ),
+    "jev": _jev,
 }
 
 

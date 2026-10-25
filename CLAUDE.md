@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 # Install dependencies
-poetry install --with dev
+poetry install --with dev --all-extras
 
 # Run all tests
 poetry run pytest
@@ -29,6 +29,7 @@ poetry build
 # Annotator benchmark (manual; calls paid APIs, see benchmark/README.md)
 poetry run python -m benchmark.label
 poetry run python -m benchmark.run --annotator llm --model openai:gpt-4o
+poetry run python -m benchmark.run --annotator jev --model jev-latest
 ```
 
 ## Architecture
@@ -49,7 +50,7 @@ Text → Segmentor → Extractor → Consolidator → (Processor returns results
 - **Extractor** (`components/extractor.py`): Chunks text (or a stream of text) and runs a Pydantic AI `Agent` with `output_type=list[Target]` on each chunk concurrently.
 - **Consolidator** (`components/consolidator.py`): Merges duplicate targets by sending batches to an LLM, re-running until the list is within `target_num * tolerance` or `max_iter` is reached.
 - **Processor** (`components/processor.py`): Orchestrates Extractor → Consolidator into a single `process(texts)` call; returns the consolidated list.
-- **Annotators** (`components/annotators/`): `Annotator` is an abstract base that chunks text and unions per-chunk results. `LLMAnnotator` asks an LLM for the indices of targets present, with the output type restricted to valid indices.
+- **Annotators** (`components/annotators/`): `Annotator` is an abstract base that chunks text and unions per-chunk results. `LLMAnnotator` asks an LLM for the indices of targets present, with the output type restricted to valid indices. `JevAnnotator` (`jev.py`, `textmancy[jev]` extra, `TYPESAFE_API_KEY`) asks TypeSafe's Jev classifier one Noul (yes/no) question per target via `AsyncTypeSafeClient.system_one`; `annotate_scores*` returns a probability per target, `annotate*` thresholds it (constructor default 0.5, per-call override). Per-chunk probabilities are combined by `aggregation.py` (`max_` default, `noisy_or` with a `min_prob` floor, `mean`, or a callable). The SDK is imported lazily; tests inject a fake `client`.
 
 ### Target Models
 
@@ -64,11 +65,12 @@ Targets drive the structured output schema passed to the LLM.
 - `pydantic-ai-slim[openai]` — LLM orchestration and structured output. Extras: `textmancy[anthropic]`, `textmancy[google]`.
 - `pydantic` v2 — target models
 - `thefuzz` — declared but currently unused
+- `typesafe-sdk` (optional `jev` extra) � Jev classification for `JevAnnotator`
 - `python-dotenv` (dev) — loading API keys from `.env` in local dev
 
 ### Testing
 
-Tests never call real providers: `test/conftest.py` sets `pydantic_ai.models.ALLOW_MODEL_REQUESTS = False`. Use the `recording_model` fixture (a `FunctionModel` wrapper) to return canned output and inspect prompts.
+Tests never call real providers: `test/conftest.py` sets `pydantic_ai.models.ALLOW_MODEL_REQUESTS = False`. Use the `recording_model` fixture (a `FunctionModel` wrapper) to return canned output and inspect prompts. Tests that call real paid APIs are marked `@pytest.mark.live`; they are deselected by default (`-m "not live"` in `addopts`) and run with `poetry run pytest -m live`.
 
 ### Benchmark
 

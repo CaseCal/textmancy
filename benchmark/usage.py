@@ -1,7 +1,7 @@
 """Token accounting for benchmark runs."""
 
 from dataclasses import asdict, dataclass
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 from pydantic_ai.models import Model
 from pydantic_ai.models.wrapper import WrapperModel
@@ -11,6 +11,8 @@ from pydantic_ai.usage import RequestUsage
 PRICING: dict[str, tuple[float, float]] = {
     "openai:gpt-4o": (2.50, 10.00),
     "openai:gpt-4o-mini": (0.15, 0.60),
+    # typesafe.ai lists $42 per billion input tokens; output tokens are currently free.
+    "jev-latest": (0.042, 0.0),
 }
 
 
@@ -21,6 +23,7 @@ class UsageTracker:
     output_tokens: int = 0
 
     def add(self, usage: RequestUsage) -> None:
+        """Records one request; accepts any usage object with input_tokens/output_tokens."""
         self.requests += 1
         self.input_tokens += usage.input_tokens or 0
         self.output_tokens += usage.output_tokens or 0
@@ -38,6 +41,19 @@ class UsageTrackingModel(WrapperModel):
 
     async def request(self, messages, model_settings, model_request_parameters):
         response = await super().request(messages, model_settings, model_request_parameters)
+        self.tracker.add(response.usage)
+        return response
+
+
+class UsageTrackingClient:
+    """Wraps a TypeSafe async client and records every system_one response's token usage."""
+
+    def __init__(self, wrapped: Any, tracker: UsageTracker):
+        self.wrapped = wrapped
+        self.tracker = tracker
+
+    async def system_one(self, *args, **kwargs):
+        response = await self.wrapped.system_one(*args, **kwargs)
         self.tracker.add(response.usage)
         return response
 
