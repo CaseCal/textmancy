@@ -1,0 +1,99 @@
+{
+  "name": "snows_of_kilimanjaro",
+  "source": "sample_data/snows_of_kiliminjaro.txt",
+  "segmentor": {
+    "type": "PageSegmentor",
+    "paragraphs_per_page": 10
+  },
+  "sample": null,
+  "target_class": "Character",
+  "targets": [
+    {
+      "name": "Harry",
+      "description": "The protagonist, a writer dying of gangrene on safari in Africa who reflects on the stories he never wrote and the talent he wasted.",
+      "physical_description": "A man lying on a cot with a gangrenous, rotting right leg.",
+      "known_as": [
+        "Harry",
+        "Bwana"
+      ],
+      "summary_of_actions": "Argues bitterly with his wife, drinks whiskey, remembers his past in Europe and the war, and dies in the night, dreaming of flying to the summit of Kilimanjaro."
+    },
+    {
+      "name": "Helen",
+      "description": "Harry's wealthy wife, who cares for him in camp and whose money he believes corrupted his writing.",
+      "physical_description": "A well-built woman with a pleasant body, good legs, and a still-attractive face.",
+      "known_as": [
+        "Helen",
+        "Memsahib"
+      ],
+      "summary_of_actions": "Nurses Harry, shoots game for broth, endures his cruelty, and finds him dead at night."
+    },
+    {
+      "name": "Molo",
+      "description": "Harry's personal servant at the safari camp.",
+      "physical_description": "Not described.",
+      "known_as": [
+        "Molo"
+      ],
+      "summary_of_actions": "Brings Harry drinks, tends the fire, and follows his orders around the camp."
+    },
+    {
+      "name": "Compton",
+      "description": "The pilot who arrives with a small plane to fly Harry out to medical care.",
+      "physical_description": "Wears a tweed jacket and a slouch hat.",
+      "known_as": [
+        "Compton",
+        "Compie"
+      ],
+      "summary_of_actions": "Lands the Puss Moth, has tea, and in Harry's dying dream flies him toward Kilimanjaro."
+    },
+    {
+      "name": "Williamson",
+      "description": "The bombing officer from Harry's war memories.",
+      "physical_description": "A fat man.",
+      "known_as": [
+        "Williamson"
+      ],
+      "summary_of_actions": "Is caught in the wire by a stick bomb, begs to be shot, and is given all of Harry's morphine tablets."
+    },
+    {
+      "name": "Barker",
+      "description": "A pilot from Harry's war memories.",
+      "physical_description": "Not described.",
+      "known_as": [
+        "Barker"
+      ],
+      "summary_of_actions": "Flies across the lines to bomb and machine-gun an Austrian officers' leave train, then tells of it in the mess."
+    },
+    {
+      "name": "Herr Lent",
+      "description": "A ski-school owner from Harry's memories of the Madlener-haus.",
+      "physical_description": "Has a long nose.",
+      "known_as": [
+        "Herr Lent",
+        "Lent"
+      ],
+      "summary_of_actions": "Gambles at cards while snowbound and loses everything, including his capital."
+    },
+    {
+      "name": "Tristan Tzara",
+      "description": "A Roumanian Dadaist from Harry's Paris memories.",
+      "physical_description": "Always wears a monocle.",
+      "known_as": [
+        "Tristan Tzara",
+        "Tzara"
+      ],
+      "summary_of_actions": "Talks about the Dada movement and always has a headache."
+    },
+    {
+      "name": "Marie",
+      "description": "Harry's femme de menage (housekeeper) in Paris.",
+      "physical_description": "Not described.",
+      "known_as": [
+        "Marie"
+      ],
+      "summary_of_actions": "Protests against the eight-hour day, saying working men drink more with shorter hours."
+    }
+  ],
+  "pages": []
+}
