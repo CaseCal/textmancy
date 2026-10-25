@@ -25,6 +25,10 @@ poetry run flake8 textmancy --count --exit-zero --max-complexity=10 --max-line-l
 
 # Build package
 poetry build
+
+# Annotator benchmark (manual; calls paid APIs, see benchmark/README.md)
+poetry run python -m benchmark.label
+poetry run python -m benchmark.run --annotator llm --model openai:gpt-4o
 ```
 
 ## Architecture
@@ -65,6 +69,16 @@ Targets drive the structured output schema passed to the LLM.
 ### Testing
 
 Tests never call real providers: `test/conftest.py` sets `pydantic_ai.models.ALLOW_MODEL_REQUESTS = False`. Use the `recording_model` fixture (a `FunctionModel` wrapper) to return canned output and inspect prompts.
+
+### Benchmark
+
+`benchmark/` (not shipped in the package) scores annotators against frozen targets and
+human-reviewed page labels in `benchmark/data/*.json`. `label.py` writes silver labels plus a
+review report of pages where the LLM and an alias string match disagree; `run.py` refuses to run
+until those pages are `reviewed: true` and every page's `text_hash` matches its regenerated text,
+then writes `benchmark/results/*.json` (named with a digest of the gold data) and regenerates
+`RESULTS.md`. A candidate annotator's F1 (2-fold cross-validated when it tunes an aggregator and
+threshold) must be within 0.05 of the `openai:gpt-4o` `LLMAnnotator` baseline. Its logic is unit-tested in `test/benchmark/`.
 
 ### Linting Config
 

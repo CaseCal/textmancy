@@ -1,0 +1,1238 @@
+{
+  "name": "christmas_carol",
+  "source": "sample_data/christmas_carol.txt",
+  "segmentor": {
+    "type": "PageSegmentor",
+    "paragraphs_per_page": 10
+  },
+  "sample": {
+    "size": 60,
+    "seed": 1843
+  },
+  "target_class": "Character",
+  "targets": [
+    {
+      "name": "Ebenezer Scrooge",
+      "description": "A miserly London businessman who is transformed by four ghostly visits on Christmas Eve.",
+      "physical_description": "Old, thin, with a pointed nose, shrivelled cheek, red eyes, thin blue lips, and frosty white hair.",
+      "known_as": [
+        "Scrooge",
+        "Ebenezer"
+      ],
+      "summary_of_actions": "Rejects Christmas, is visited by Marley and three Spirits, repents, and becomes generous."
+    },
+    {
+      "name": "Jacob Marley",
+      "description": "Scrooge's dead business partner who returns as a ghost to warn him.",
+      "physical_description": "A transparent ghost bound in a long chain of cash-boxes, keys, padlocks and ledgers.",
+      "known_as": [
+        "Marley",
+        "Jacob Marley"
+      ],
+      "summary_of_actions": "Appears to Scrooge, warns him of his fate, and announces the three Spirits."
+    },
+    {
+      "name": "Bob Cratchit",
+      "description": "Scrooge's poorly paid, good-hearted clerk.",
+      "physical_description": "Wears a threadbare comforter in place of a greatcoat.",
+      "known_as": [
+        "Bob",
+        "Bob Cratchit"
+      ],
+      "summary_of_actions": "Works in the cold office, celebrates a humble Christmas with his family, and mourns Tiny Tim in a vision of the future."
+    },
+    {
+      "name": "Mrs. Cratchit",
+      "description": "Bob Cratchit's wife.",
+      "physical_description": "Dressed in a twice-turned gown, brave in ribbons.",
+      "known_as": [
+        "Mrs. Cratchit"
+      ],
+      "summary_of_actions": "Prepares the family's Christmas dinner and reluctantly toasts Scrooge."
+    },
+    {
+      "name": "Tiny Tim",
+      "description": "Bob Cratchit's youngest son, sickly and kind.",
+      "physical_description": "A small, lame boy who carries a little crutch and has his limbs supported by an iron frame.",
+      "known_as": [
+        "Tiny Tim"
+      ],
+      "summary_of_actions": "Says 'God bless Us, Every One!' and, in a future vision, has died; after Scrooge reforms, he does not die."
+    },
+    {
+      "name": "Martha Cratchit",
+      "description": "Bob Cratchit's eldest daughter, an apprentice at a milliner's.",
+      "physical_description": "Not described.",
+      "known_as": [
+        "Martha"
+      ],
+      "summary_of_actions": "Comes home late for Christmas dinner and hides to tease her father."
+    },
+    {
+      "name": "Peter Cratchit",
+      "description": "Bob Cratchit's son.",
+      "physical_description": "Wears his father's oversized shirt collar.",
+      "known_as": [
+        "Peter"
+      ],
+      "summary_of_actions": "Helps with the Christmas dinner and reads to the family in the future vision."
+    },
+    {
+      "name": "Belinda Cratchit",
+      "description": "Bob Cratchit's second daughter.",
+      "physical_description": "Brave in ribbons.",
+      "known_as": [
+        "Belinda"
+      ],
+      "summary_of_actions": "Helps her mother lay the cloth and sweetens the apple-sauce."
+    },
+    {
+      "name": "Fred",
+      "description": "Scrooge's cheerful nephew, son of his late sister Fan.",
+      "physical_description": "Handsome, with a ruddy face and sparkling eyes.",
+      "known_as": [
+        "Fred"
+      ],
+      "summary_of_actions": "Invites Scrooge to Christmas dinner, hosts a party with games, and welcomes Scrooge when he finally comes."
+    },
+    {
+      "name": "Ghost of Christmas Past",
+      "description": "The first of the three Spirits, who shows Scrooge scenes from his own past.",
+      "physical_description": "A strange figure like a child yet like an old man, with a bright jet of light from its crown, white hair, and a white tunic.",
+      "known_as": [
+        "Ghost of Christmas Past"
+      ],
+      "summary_of_actions": "Shows Scrooge his lonely school days, Fezziwig's ball, and his parting with Belle."
+    },
+    {
+      "name": "Ghost of Christmas Present",
+      "description": "The second Spirit, who shows Scrooge Christmas as it is being celebrated now.",
+      "physical_description": "A jolly giant in a green robe bordered with white fur, wearing a holly wreath.",
+      "known_as": [
+        "Ghost of Christmas Present"
+      ],
+      "summary_of_actions": "Shows Scrooge the Cratchits, Fred's party, and the children Ignorance and Want."
+    },
+    {
+      "name": "Ghost of Christmas Yet to Come",
+      "description": "The third and last Spirit, who shows Scrooge the future.",
+      "physical_description": "A solemn Phantom draped in a deep black garment, showing only one outstretched hand.",
+      "known_as": [
+        "Ghost of Christmas Yet to Come",
+        "Phantom"
+      ],
+      "summary_of_actions": "Silently shows Scrooge his unmourned death, his plundered belongings, and his grave."
+    },
+    {
+      "name": "Mr. Fezziwig",
+      "description": "Scrooge's jovial former employer.",
+      "physical_description": "An old gentleman in a Welsh wig.",
+      "known_as": [
+        "Fezziwig"
+      ],
+      "summary_of_actions": "Throws a joyful Christmas Eve ball for his apprentices and staff."
+    },
+    {
+      "name": "Mrs. Fezziwig",
+      "description": "Mr. Fezziwig's wife.",
+      "physical_description": "One vast substantial smile.",
+      "known_as": [
+        "Mrs. Fezziwig"
+      ],
+      "summary_of_actions": "Dances with her husband at their Christmas ball."
+    },
+    {
+      "name": "Belle",
+      "description": "Scrooge's former fiancee.",
+      "physical_description": "A fair young girl in a mourning-dress.",
+      "known_as": [
+        "Belle"
+      ],
+      "summary_of_actions": "Releases Scrooge from their engagement because he loves money more; later shown happily married with children."
+    },
+    {
+      "name": "Fan",
+      "description": "Scrooge's younger sister, Fred's mother, now dead.",
+      "physical_description": "A little girl.",
+      "known_as": [
+        "Fan"
+      ],
+      "summary_of_actions": "Comes to bring young Scrooge home from school for Christmas."
+    },
+    {
+      "name": "Dick Wilkins",
+      "description": "Scrooge's fellow apprentice at Fezziwig's.",
+      "physical_description": "Not described.",
+      "known_as": [
+        "Dick Wilkins"
+      ],
+      "summary_of_actions": "Clears away the warehouse with young Scrooge for the Christmas ball."
+    },
+    {
+      "name": "Old Joe",
+      "description": "A dealer in stolen goods in a squalid shop.",
+      "physical_description": "A grey-haired rascal of nearly seventy years.",
+      "known_as": [
+        "Old Joe"
+      ],
+      "summary_of_actions": "Buys the dead man's belongings from the charwoman, laundress, and undertaker's man."
+    },
+    {
+      "name": "Mrs. Dilber",
+      "description": "The laundress who sells the dead Scrooge's belongings.",
+      "physical_description": "Not described.",
+      "known_as": [
+        "Mrs. Dilber"
+      ],
+      "summary_of_actions": "Brings stolen sheets, towels and clothes to Old Joe."
+    },
+    {
+      "name": "Topper",
+      "description": "A bachelor friend at Fred's Christmas party.",
+      "physical_description": "Not described.",
+      "known_as": [
+        "Topper"
+      ],
+      "summary_of_actions": "Pursues the plump sister during blind man's buff."
+    },
+    {
+      "name": "Caroline",
+      "description": "A debtor's wife in the future vision.",
+      "physical_description": "A mild and patient creature with a careworn face.",
+      "known_as": [
+        "Caroline"
+      ],
+      "summary_of_actions": "Is relieved to hear that the man they owed money to has died."
+    }
+  ],
+  "pages": [
+    {
+      "index": 0,
+      "text_hash": "a187ac76939ffb8c",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [
+        0,
+        1
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 8,
+      "text_hash": "30abe0a467500904",
+      "labels": [
+        0,
+        2,
+        8
+      ],
+      "silver": [
+        0,
+        2,
+        8
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 9,
+      "text_hash": "8cc052134725aaca",
+      "labels": [
+        0,
+        8
+      ],
+      "silver": [
+        0,
+        8
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 10,
+      "text_hash": "1db24b5358c07d26",
+      "labels": [
+        0,
+        8
+      ],
+      "silver": [
+        0,
+        8
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 11,
+      "text_hash": "e3f225520d71269f",
+      "labels": [
+        0,
+        8
+      ],
+      "silver": [
+        0,
+        8
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 15,
+      "text_hash": "81e42b97a7904388",
+      "labels": [
+        0,
+        8
+      ],
+      "silver": [
+        0,
+        8
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 17,
+      "text_hash": "31a6a0b2904a0147",
+      "labels": [
+        0,
+        1,
+        2,
+        8
+      ],
+      "silver": [
+        0,
+        1,
+        8
+      ],
+      "string_match": [
+        0,
+        1
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 19,
+      "text_hash": "fc690636b160d0ea",
+      "labels": [
+        0
+      ],
+      "silver": [
+        0
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 25,
+      "text_hash": "7fc4fd08c8bbe34d",
+      "labels": [
+        0
+      ],
+      "silver": [
+        0
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 26,
+      "text_hash": "8c228bbeedd377fd",
+      "labels": [
+        0,
+        2
+      ],
+      "silver": [
+        0,
+        2
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 32,
+      "text_hash": "2ba9ef0d334dc94b",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [
+        1
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 41,
+      "text_hash": "e5e2d8dfa6c8d56f",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [
+        0,
+        1
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 45,
+      "text_hash": "b7d46cdcbc414073",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 48,
+      "text_hash": "644881209e8f7def",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 49,
+      "text_hash": "baa596b2fcc493bc",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [
+        0,
+        1
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 57,
+      "text_hash": "3e3c804516efa918",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [
+        0,
+        1
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 61,
+      "text_hash": "c2eec9ef7dd75f87",
+      "labels": [
+        0
+      ],
+      "silver": [
+        0
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 70,
+      "text_hash": "b122bdd895f51c36",
+      "labels": [
+        0,
+        9
+      ],
+      "silver": [
+        0,
+        9
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 72,
+      "text_hash": "1997a0947ea323f8",
+      "labels": [
+        0,
+        9
+      ],
+      "silver": [
+        0,
+        9
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 73,
+      "text_hash": "e85f767c407ff10f",
+      "labels": [
+        0,
+        9
+      ],
+      "silver": [
+        0,
+        9
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 75,
+      "text_hash": "b4897563d0438797",
+      "labels": [
+        0,
+        9
+      ],
+      "silver": [
+        0,
+        9
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 77,
+      "text_hash": "6f6fae20edafd17a",
+      "labels": [
+        0,
+        9
+      ],
+      "silver": [
+        0,
+        9
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 78,
+      "text_hash": "5ce1c56c3af0201e",
+      "labels": [
+        0,
+        9
+      ],
+      "silver": [
+        0,
+        9
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 86,
+      "text_hash": "b58141e084bfb803",
+      "labels": [
+        0,
+        15
+      ],
+      "silver": [
+        0,
+        15
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 100,
+      "text_hash": "dc643ff73d16acbe",
+      "labels": [
+        0,
+        2,
+        9,
+        12
+      ],
+      "silver": [
+        0,
+        2,
+        9,
+        12
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 102,
+      "text_hash": "d6a8627230b8cf93",
+      "labels": [
+        0,
+        9,
+        14
+      ],
+      "silver": [
+        0,
+        9,
+        14
+      ],
+      "string_match": [
+        9
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 108,
+      "text_hash": "480af7a3ba9f096c",
+      "labels": [
+        0,
+        9,
+        14
+      ],
+      "silver": [
+        0,
+        9,
+        14
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 113,
+      "text_hash": "bbc429530ba531e6",
+      "labels": [
+        0,
+        1,
+        9,
+        14
+      ],
+      "silver": [
+        0,
+        1,
+        9,
+        14
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 117,
+      "text_hash": "c14ad1ab34928cf8",
+      "labels": [
+        0,
+        10
+      ],
+      "silver": [
+        0,
+        10
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 121,
+      "text_hash": "287c60cb1bf43891",
+      "labels": [
+        0,
+        1,
+        10
+      ],
+      "silver": [
+        0,
+        1,
+        10
+      ],
+      "string_match": [
+        0,
+        1
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 124,
+      "text_hash": "3541e3c26a44c123",
+      "labels": [
+        0,
+        10
+      ],
+      "silver": [
+        0,
+        10,
+        11
+      ],
+      "string_match": [
+        0,
+        10,
+        11
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 129,
+      "text_hash": "2d62256a33be39ee",
+      "labels": [],
+      "silver": [],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 137,
+      "text_hash": "da7ba225c9c3a3f0",
+      "labels": [
+        0,
+        2,
+        3,
+        10
+      ],
+      "silver": [
+        0,
+        2,
+        3,
+        10
+      ],
+      "string_match": [
+        0,
+        2,
+        3
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 139,
+      "text_hash": "180a53befd7a2bb3",
+      "labels": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "silver": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "string_match": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 142,
+      "text_hash": "e43512889419d1fc",
+      "labels": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "silver": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "string_match": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 149,
+      "text_hash": "98e14b2c2dc5ec72",
+      "labels": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "silver": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "string_match": [
+        2
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 151,
+      "text_hash": "a859a14ac249cde0",
+      "labels": [
+        0,
+        4,
+        10
+      ],
+      "silver": [
+        0,
+        4,
+        10
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 155,
+      "text_hash": "afb0500088c4bd46",
+      "labels": [
+        5,
+        6
+      ],
+      "silver": [
+        5,
+        6
+      ],
+      "string_match": [
+        5,
+        6
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 158,
+      "text_hash": "f1e57d2ea5c8f20d",
+      "labels": [],
+      "silver": [],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 169,
+      "text_hash": "b3eb15003b348c00",
+      "labels": [
+        0,
+        8
+      ],
+      "silver": [
+        0,
+        8
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 171,
+      "text_hash": "93d9801e642b6aff",
+      "labels": [
+        0,
+        8
+      ],
+      "silver": [
+        0,
+        8
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 172,
+      "text_hash": "2e1663869082d457",
+      "labels": [
+        0,
+        2,
+        8
+      ],
+      "silver": [
+        0,
+        2,
+        8
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 177,
+      "text_hash": "c9de00b9bf50ae73",
+      "labels": [
+        0,
+        8,
+        10,
+        19
+      ],
+      "silver": [
+        0,
+        8,
+        10,
+        19
+      ],
+      "string_match": [
+        0,
+        19
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 179,
+      "text_hash": "9a8d90e57e442fa0",
+      "labels": [
+        0,
+        8
+      ],
+      "silver": [
+        0,
+        8
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 183,
+      "text_hash": "a48590ae873fe579",
+      "labels": [
+        0,
+        10
+      ],
+      "silver": [
+        0,
+        10
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 187,
+      "text_hash": "2eaaf8d5f0c908b4",
+      "labels": [
+        0,
+        1,
+        10,
+        11
+      ],
+      "silver": [
+        0,
+        1,
+        10,
+        11
+      ],
+      "string_match": [
+        0,
+        1,
+        11
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 188,
+      "text_hash": "3712e70605e3b927",
+      "labels": [
+        0,
+        11
+      ],
+      "silver": [
+        0,
+        11
+      ],
+      "string_match": [
+        0,
+        11
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 189,
+      "text_hash": "6ac4e93443ea8aed",
+      "labels": [
+        0,
+        11
+      ],
+      "silver": [
+        0,
+        11
+      ],
+      "string_match": [
+        0,
+        11
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 202,
+      "text_hash": "50d0df5244afa5da",
+      "labels": [
+        17,
+        18
+      ],
+      "silver": [
+        17,
+        18
+      ],
+      "string_match": [
+        17
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 207,
+      "text_hash": "59740d895dde8f46",
+      "labels": [
+        17,
+        18
+      ],
+      "silver": [
+        17,
+        18
+      ],
+      "string_match": [
+        17,
+        18
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 209,
+      "text_hash": "ca061f660d212990",
+      "labels": [
+        0,
+        17
+      ],
+      "silver": [
+        0,
+        17
+      ],
+      "string_match": [
+        17
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 212,
+      "text_hash": "be58bf298be7dcd3",
+      "labels": [
+        0,
+        11
+      ],
+      "silver": [
+        0,
+        11
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 213,
+      "text_hash": "8ce19ec6bd54872b",
+      "labels": [
+        0,
+        11
+      ],
+      "silver": [
+        0,
+        11
+      ],
+      "string_match": [
+        0,
+        11
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 216,
+      "text_hash": "9d7674b31e4e8a64",
+      "labels": [
+        0,
+        11,
+        20
+      ],
+      "silver": [
+        0,
+        11,
+        20
+      ],
+      "string_match": [
+        0,
+        11
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 227,
+      "text_hash": "6db5b0bc9f227dd2",
+      "labels": [
+        2,
+        3,
+        6,
+        8
+      ],
+      "silver": [
+        2,
+        3,
+        6,
+        8
+      ],
+      "string_match": [
+        2,
+        6
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 231,
+      "text_hash": "79178da7988be20d",
+      "labels": [
+        0,
+        11
+      ],
+      "silver": [
+        0,
+        11
+      ],
+      "string_match": [
+        0,
+        11
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 232,
+      "text_hash": "59de92bb4e7c7600",
+      "labels": [
+        0,
+        11
+      ],
+      "silver": [
+        0,
+        11
+      ],
+      "string_match": [
+        0,
+        11
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 235,
+      "text_hash": "013c5a8522d29e94",
+      "labels": [
+        0,
+        11
+      ],
+      "silver": [
+        0,
+        11
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 244,
+      "text_hash": "4956e335e8d81b92",
+      "labels": [
+        0,
+        2,
+        4
+      ],
+      "silver": [
+        0,
+        2,
+        4
+      ],
+      "string_match": [
+        0,
+        2,
+        4
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 253,
+      "text_hash": "e71b30736abe8cb1",
+      "labels": [
+        0,
+        2,
+        19
+      ],
+      "silver": [
+        0,
+        2,
+        19
+      ],
+      "string_match": [
+        0,
+        2,
+        19
+      ],
+      "reviewed": true
+    }
+  ]
+}

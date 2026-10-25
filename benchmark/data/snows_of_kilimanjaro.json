@@ -1,0 +1,1135 @@
+{
+  "name": "snows_of_kilimanjaro",
+  "source": "sample_data/snows_of_kiliminjaro.txt",
+  "segmentor": {
+    "type": "PageSegmentor",
+    "paragraphs_per_page": 10
+  },
+  "sample": null,
+  "target_class": "Character",
+  "targets": [
+    {
+      "name": "Harry",
+      "description": "The protagonist, a writer dying of gangrene on safari in Africa who reflects on the stories he never wrote and the talent he wasted.",
+      "physical_description": "A man lying on a cot with a gangrenous, rotting right leg.",
+      "known_as": [
+        "Harry",
+        "Bwana"
+      ],
+      "summary_of_actions": "Argues bitterly with his wife, drinks whiskey, remembers his past in Europe and the war, and dies in the night, dreaming of flying to the summit of Kilimanjaro."
+    },
+    {
+      "name": "Helen",
+      "description": "Harry's wealthy wife, who cares for him in camp and whose money he believes corrupted his writing.",
+      "physical_description": "A well-built woman with a pleasant body, good legs, and a still-attractive face.",
+      "known_as": [
+        "Helen",
+        "Memsahib"
+      ],
+      "summary_of_actions": "Nurses Harry, shoots game for broth, endures his cruelty, and finds him dead at night."
+    },
+    {
+      "name": "Molo",
+      "description": "Harry's personal servant at the safari camp.",
+      "physical_description": "Not described.",
+      "known_as": [
+        "Molo"
+      ],
+      "summary_of_actions": "Brings Harry drinks, tends the fire, and follows his orders around the camp."
+    },
+    {
+      "name": "Compton",
+      "description": "The pilot who arrives with a small plane to fly Harry out to medical care.",
+      "physical_description": "Wears a tweed jacket and a slouch hat.",
+      "known_as": [
+        "Compton",
+        "Compie"
+      ],
+      "summary_of_actions": "Lands the Puss Moth, has tea, and in Harry's dying dream flies him toward Kilimanjaro."
+    },
+    {
+      "name": "Williamson",
+      "description": "The bombing officer from Harry's war memories.",
+      "physical_description": "A fat man.",
+      "known_as": [
+        "Williamson"
+      ],
+      "summary_of_actions": "Is caught in the wire by a stick bomb, begs to be shot, and is given all of Harry's morphine tablets."
+    },
+    {
+      "name": "Barker",
+      "description": "A pilot from Harry's war memories.",
+      "physical_description": "Not described.",
+      "known_as": [
+        "Barker"
+      ],
+      "summary_of_actions": "Flies across the lines to bomb and machine-gun an Austrian officers' leave train, then tells of it in the mess."
+    },
+    {
+      "name": "Herr Lent",
+      "description": "A ski-school owner from Harry's memories of the Madlener-haus.",
+      "physical_description": "Has a long nose.",
+      "known_as": [
+        "Herr Lent",
+        "Lent"
+      ],
+      "summary_of_actions": "Gambles at cards while snowbound and loses everything, including his capital."
+    },
+    {
+      "name": "Tristan Tzara",
+      "description": "A Roumanian Dadaist from Harry's Paris memories.",
+      "physical_description": "Always wears a monocle.",
+      "known_as": [
+        "Tristan Tzara",
+        "Tzara"
+      ],
+      "summary_of_actions": "Talks about the Dada movement and always has a headache."
+    },
+    {
+      "name": "Marie",
+      "description": "Harry's femme de menage (housekeeper) in Paris.",
+      "physical_description": "Not described.",
+      "known_as": [
+        "Marie"
+      ],
+      "summary_of_actions": "Protests against the eight-hour day, saying working men drink more with shorter hours."
+    }
+  ],
+  "pages": [
+    {
+      "index": 0,
+      "text_hash": "b6211d138aaee37e",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 1,
+      "text_hash": "1a073581549b6fb3",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 2,
+      "text_hash": "9ae05844d94c72dc",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 3,
+      "text_hash": "00ea97f701034c91",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 4,
+      "text_hash": "977e852e1c878ae7",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 5,
+      "text_hash": "9142de569f11dd7d",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 6,
+      "text_hash": "4865b145e477aa0c",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 7,
+      "text_hash": "8467ca0daa327525",
+      "labels": [
+        0,
+        1,
+        2
+      ],
+      "silver": [
+        0,
+        1,
+        2
+      ],
+      "string_match": [
+        0,
+        2
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 8,
+      "text_hash": "8030dee792b00c70",
+      "labels": [
+        0
+      ],
+      "silver": [
+        0
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 9,
+      "text_hash": "d65fabab451b9c3e",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 10,
+      "text_hash": "5d85cecc9722ef53",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 11,
+      "text_hash": "8d99ed817330e112",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 12,
+      "text_hash": "486cce2fda2b3d43",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 13,
+      "text_hash": "741c09ec5ee2dd59",
+      "labels": [
+        0
+      ],
+      "silver": [
+        0
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 14,
+      "text_hash": "50d52c7cf33513d6",
+      "labels": [
+        0,
+        6
+      ],
+      "silver": [
+        0,
+        6
+      ],
+      "string_match": [
+        6
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 15,
+      "text_hash": "fbf63cbb347f7cb6",
+      "labels": [
+        0,
+        5
+      ],
+      "silver": [
+        0,
+        5
+      ],
+      "string_match": [
+        5
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 16,
+      "text_hash": "602d3cec6d8c9887",
+      "labels": [
+        0
+      ],
+      "silver": [
+        0
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 17,
+      "text_hash": "5b57895823048980",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 18,
+      "text_hash": "704ff15b4125ade4",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 19,
+      "text_hash": "471761f881e1f1e7",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 20,
+      "text_hash": "93ab7039d79c20d2",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 21,
+      "text_hash": "966a21aef708d162",
+      "labels": [
+        0,
+        1,
+        2
+      ],
+      "silver": [
+        0,
+        1,
+        2
+      ],
+      "string_match": [
+        0,
+        1
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 22,
+      "text_hash": "7a4c14fa0f02b6a8",
+      "labels": [
+        0
+      ],
+      "silver": [
+        0
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 23,
+      "text_hash": "07c557e07ab843ec",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 24,
+      "text_hash": "f64f0145d62b89b3",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 25,
+      "text_hash": "acbebd57910c167e",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 26,
+      "text_hash": "c685136de0324d0b",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 27,
+      "text_hash": "3973a30795997ada",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 28,
+      "text_hash": "c83e67f3e1703892",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 29,
+      "text_hash": "4607754945a113f0",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 30,
+      "text_hash": "b0a9345c8de98102",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 31,
+      "text_hash": "f4df6f76b4911d8a",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 32,
+      "text_hash": "273aaf3b0ac93d88",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 33,
+      "text_hash": "a90b6638e7eabb99",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 34,
+      "text_hash": "cc585bf433638c35",
+      "labels": [
+        0,
+        1,
+        2
+      ],
+      "silver": [
+        0,
+        1,
+        2
+      ],
+      "string_match": [
+        2
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 35,
+      "text_hash": "7e483b0cbb445372",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 36,
+      "text_hash": "7bf71874cfc40e99",
+      "labels": [
+        0,
+        1,
+        2
+      ],
+      "silver": [
+        0,
+        1,
+        2
+      ],
+      "string_match": [
+        0,
+        2
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 37,
+      "text_hash": "663072590e84d12a",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 38,
+      "text_hash": "571375816b6c3b49",
+      "labels": [
+        0
+      ],
+      "silver": [
+        0
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 39,
+      "text_hash": "073e8949a75c283a",
+      "labels": [
+        0
+      ],
+      "silver": [
+        0
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 40,
+      "text_hash": "284df103fe300182",
+      "labels": [
+        0
+      ],
+      "silver": [
+        0
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 41,
+      "text_hash": "ae86ff744ab77639",
+      "labels": [
+        0
+      ],
+      "silver": [
+        0
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 42,
+      "text_hash": "54ec3af03d2899b5",
+      "labels": [
+        0,
+        7
+      ],
+      "silver": [
+        0,
+        7
+      ],
+      "string_match": [
+        7
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 43,
+      "text_hash": "04d4c71b03ce16d0",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 44,
+      "text_hash": "75da7e8ead6332e5",
+      "labels": [
+        0,
+        1,
+        2
+      ],
+      "silver": [
+        0,
+        1,
+        2
+      ],
+      "string_match": [
+        0,
+        2
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 45,
+      "text_hash": "cf2d208edc716a22",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 46,
+      "text_hash": "0c0ef6a1e2120787",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 47,
+      "text_hash": "dc94fea8896a54db",
+      "labels": [
+        0
+      ],
+      "silver": [
+        0
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 48,
+      "text_hash": "9f315a12e1c68089",
+      "labels": [
+        0
+      ],
+      "silver": [
+        0
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 49,
+      "text_hash": "7e566a70871d9f2a",
+      "labels": [
+        0
+      ],
+      "silver": [
+        0
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 50,
+      "text_hash": "a3d3fd0e02d6e94b",
+      "labels": [
+        0
+      ],
+      "silver": [
+        0,
+        6
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 51,
+      "text_hash": "a3d92000f0b42086",
+      "labels": [
+        0
+      ],
+      "silver": [
+        0
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 52,
+      "text_hash": "ab47a3303fc9a0b3",
+      "labels": [
+        0
+      ],
+      "silver": [
+        0
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 53,
+      "text_hash": "fd9f19ada76d05c9",
+      "labels": [
+        0
+      ],
+      "silver": [
+        0
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 54,
+      "text_hash": "a62680eec72e27f2",
+      "labels": [
+        0,
+        8
+      ],
+      "silver": [
+        0,
+        8
+      ],
+      "string_match": [
+        8
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 55,
+      "text_hash": "154ce270cc44928c",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 56,
+      "text_hash": "0e4139a3192430a8",
+      "labels": [
+        0
+      ],
+      "silver": [
+        0
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 57,
+      "text_hash": "67c234d1925eb8f4",
+      "labels": [
+        0,
+        4
+      ],
+      "silver": [
+        0,
+        4
+      ],
+      "string_match": [
+        4
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 58,
+      "text_hash": "bac1ac07bfdebb4c",
+      "labels": [
+        0,
+        4
+      ],
+      "silver": [
+        0,
+        4
+      ],
+      "string_match": [
+        0,
+        4
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 59,
+      "text_hash": "a967b1482c8c24fa",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 60,
+      "text_hash": "be77cd9e9f945f3b",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 61,
+      "text_hash": "300d29965ac58c1c",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 62,
+      "text_hash": "033cc786242fda2c",
+      "labels": [
+        0
+      ],
+      "silver": [
+        0
+      ],
+      "string_match": [],
+      "reviewed": true
+    },
+    {
+      "index": 63,
+      "text_hash": "8d26bb2dbdebf91f",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 64,
+      "text_hash": "92cbf531348e1608",
+      "labels": [
+        0,
+        1,
+        3
+      ],
+      "silver": [
+        0,
+        1,
+        3
+      ],
+      "string_match": [
+        1,
+        3
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 65,
+      "text_hash": "f1361ecd547ea383",
+      "labels": [
+        0,
+        1,
+        3
+      ],
+      "silver": [
+        0,
+        1,
+        3
+      ],
+      "string_match": [
+        1,
+        3
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 66,
+      "text_hash": "26a6df811a3b18fd",
+      "labels": [
+        0,
+        1,
+        3
+      ],
+      "silver": [
+        0,
+        3
+      ],
+      "string_match": [
+        3
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 67,
+      "text_hash": "712ad4730e6a20d0",
+      "labels": [
+        0,
+        3
+      ],
+      "silver": [
+        0,
+        3
+      ],
+      "string_match": [
+        3
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 68,
+      "text_hash": "b69e1f839da6d44b",
+      "labels": [
+        0,
+        1,
+        3
+      ],
+      "silver": [
+        0,
+        1,
+        3
+      ],
+      "string_match": [
+        3
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 69,
+      "text_hash": "5ef9c4a5f2923945",
+      "labels": [
+        0,
+        1,
+        2
+      ],
+      "silver": [
+        0,
+        1,
+        2
+      ],
+      "string_match": [
+        0,
+        2
+      ],
+      "reviewed": true
+    },
+    {
+      "index": 70,
+      "text_hash": "60537d30d199981f",
+      "labels": [
+        0,
+        1
+      ],
+      "silver": [
+        0,
+        1
+      ],
+      "string_match": [
+        0
+      ],
+      "reviewed": true
+    }
+  ]
+}
