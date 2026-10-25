@@ -1,6 +1,14 @@
 import pytest
 
-from benchmark.metrics import THRESHOLDS, Metrics, best_config, score, sweep
+from benchmark.metrics import (
+    THRESHOLDS,
+    Metrics,
+    best_config,
+    cross_validate,
+    predict,
+    score,
+    sweep,
+)
 
 
 def test_score_micro_averages_over_pages():
@@ -41,3 +49,28 @@ def test_sweep_applies_each_aggregator_and_threshold():
     assert [row["f1"] for row in curves["min"]] == pytest.approx([0.0, 0.0])
     assert curves["max"][1]["threshold"] == 0.5
     assert best_config(curves) == ("max", 0.5)
+
+
+def test_predict_applies_aggregate_and_threshold():
+    scores = {"p": {0: [0.3, 0.8], 1: [0.4]}}
+    assert predict(scores, max, 0.5) == {"p": {0}}
+    assert predict(scores, min, 0.35) == {"p": {1}}
+
+
+def test_cross_validate_scores_each_fold_with_config_tuned_on_the_other():
+    # Alone, page a favours a low threshold and page b a high one, so each fold's config
+    # misjudges the other: the honest F1 (0.5) is below the in-sample best (0.8 at 0.2).
+    gold = {"a": {0}, "b": {0}}
+    scores = {"a": {0: [0.3]}, "b": {0: [0.5], 1: [0.3]}}
+
+    predicted, configs = cross_validate(
+        gold, scores, {"max": max}, folds=[["a"], ["b"]], thresholds=[0.2, 0.4]
+    )
+
+    assert configs == [
+        {"aggregator": "max", "threshold": 0.4},
+        {"aggregator": "max", "threshold": 0.2},
+    ]
+    assert predicted == {"a": set(), "b": {0, 1}}
+    assert score(gold, predicted).f1 == pytest.approx(0.5)
+    assert best_config(sweep(gold, scores, {"max": max}, thresholds=[0.2, 0.4])) == ("max", 0.2)

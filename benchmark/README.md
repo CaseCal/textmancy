@@ -71,10 +71,15 @@ fixed, seeded subset of pages (`null` means every page). `targets` are hand-cura
 - Wall-clock latency, total and mean per page.
 - Token usage and estimated cost.
 - Annotators that expose `annotate_scores_async` are swept over thresholds 0.10–0.90 (step
-  0.05) and every aggregator. The best-F1 configuration is reported, and the full PR curve is
-  saved in the results JSON.
+  0.05) and every aggregator. Their precision, recall, and F1 are 2-fold cross-validated:
+  pages alternate between two folds (so each fold spans every dataset), and each fold is
+  scored with the best configuration on the other fold. Tuning and scoring on the same pages
+  would inflate F1. The best configuration on all pages is reported as the one to use, and the
+  results JSON also saves its (optimistic) in-sample F1, the per-fold configurations, the full
+  PR curve, and every page's per-chunk scores, so the metrics can be recomputed without
+  re-running the annotator.
 
 ## Acceptance bar
 
-A candidate annotator's best-configuration F1 must be within **0.05** of the `LLMAnnotator`
-(`openai:gpt-4o`) baseline F1 on the same data.
+A candidate annotator's F1 (cross-validated, if it tunes an aggregator and threshold) must be
+within **0.05** of the `LLMAnnotator` (`openai:gpt-4o`) baseline F1 on the same data.

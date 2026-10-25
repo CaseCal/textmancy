@@ -85,6 +85,7 @@ def test_run_scores_llm_annotator(tmp_path, recording_model):
     assert result["latency"]["pages"] == 2
     assert result["latency"]["total_seconds"] >= result["latency"]["mean_page_seconds"] >= 0
     assert result["best_config"] is None and result["sweep"] is None
+    assert result["cross_validation"] is None and result["scores"] is None
 
 
 def test_run_splits_metrics_per_dataset(tmp_path, recording_model):
@@ -140,6 +141,45 @@ def test_run_sweeps_score_returning_annotator(tmp_path):
     assert result["predictions"] == {"book": {"0": [0], "1": [1]}}
 
 
+class TableScoringAnnotator(FakeScoringAnnotator):
+    """Returns fixed scores for each page text."""
+
+    def __init__(self, targets, table):
+        super().__init__(targets)
+        self.table = table
+
+    async def annotate_scores_async(self, text, chunk_size=4000):
+        self.calls.append(text)
+        return self.table[text]
+
+
+def test_run_reports_cross_validated_metrics_for_score_returning_annotator(tmp_path):
+    # Alone, page 0 favours threshold 0.1 and page 1 favours 0.35, so each fold's config
+    # misjudges the other: cross-validated F1 is 0.5 though the in-sample best is 0.8.
+    dataset = make_dataset(tmp_path)
+    annotator = TableScoringAnnotator(
+        dataset.target_objects(),
+        {"Ann walks.": {0: 0.3}, "Bob runs.": {0: 0.3, 1: 0.5}},
+    )
+
+    result = run_sync(run_benchmark_async([dataset], {"book": annotator}))
+
+    assert result["best_config"] == {"aggregator": "max", "threshold": 0.1}
+    assert result["cross_validation"] == {
+        "folds": 2,
+        "configs": [
+            {"aggregator": "max", "threshold": 0.35},
+            {"aggregator": "max", "threshold": 0.1},
+        ],
+        "in_sample_f1": pytest.approx(0.8),
+    }
+    assert result["metrics"]["overall"]["f1"] == pytest.approx(0.5)
+    assert result["predictions"] == {"book": {"0": [], "1": [0, 1]}}
+    assert result["scores"] == {
+        "book": {"0": {"0": [0.3], "1": [0.0]}, "1": {"0": [0.3], "1": [0.5]}}
+    }
+
+
 def test_run_scores_each_chunk_separately(tmp_path):
     dataset = make_dataset(tmp_path)
     annotator = FakeScoringAnnotator(dataset.target_objects())
@@ -177,6 +217,7 @@ def test_results_md_reports_delta_against_baseline():
         ]
     )
     assert "within **0.05**" in md
+    assert "cross-validated" in md
     llm_row = next(line for line in md.splitlines() if "| llm |" in line)
     jev_row = next(line for line in md.splitlines() if "| jev |" in line)
     assert "0.830" in llm_row and "+0.000" in llm_row
