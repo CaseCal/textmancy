@@ -19,7 +19,8 @@ Put provider keys in `.env` at the repo root: `ANTHROPIC_API_KEY` for silver lab
 
    This fills `pages` in `benchmark/data/*.json` and also records an alias string match (each
    target's `name` and `known_as`, case-insensitive, word-bounded). Pages that are already
-   labeled are left alone, so re-running only labels new pages.
+   labeled are left alone, so re-running only labels new pages. If some pages fail (for
+   example on a rate limit), the others are still saved; re-run to retry the failures.
 
 2. **Review** `benchmark/review/<dataset>.md`. It lists every page where the silver labels and
    the string match disagree. For each one, fix `labels` in the dataset JSON and set
@@ -32,8 +33,11 @@ Put provider keys in `.env` at the repo root: `ANTHROPIC_API_KEY` for silver lab
    poetry run python -m benchmark.run --annotator llm --model openai:gpt-4o
    ```
 
-   `run.py` refuses to run while any disagreement page is unreviewed. It writes
-   `benchmark/results/YYYY-MM-DD-<annotator>-<model>.json` and regenerates `RESULTS.md`.
+   `run.py` refuses to run while any disagreement page is unreviewed, or while any page's
+   text no longer matches its `text_hash`. It writes
+   `benchmark/results/YYYY-MM-DD-<annotator>-<model>-<gold digest>.json` and regenerates
+   `RESULTS.md`. The gold digest fingerprints the selected datasets, page text, and labels;
+   ΔF1 is only reported against a baseline run with the same digest.
    Use `--price-in` and `--price-out` (USD per million tokens) for models missing from the
    pricing table in `usage.py`.
 
@@ -50,12 +54,13 @@ Put provider keys in `.env` at the repo root: `ANTHROPIC_API_KEY` for silver lab
   "target_class": "Character",
   "targets": [{"name": "Ebenezer Scrooge", "known_as": ["Scrooge", "Ebenezer"], "...": "..."}],
   "pages": [
-    {"index": 0, "labels": [0, 2], "silver": [0, 2], "string_match": [0], "reviewed": true}
+    {"index": 0, "text_hash": "9f2c…", "labels": [0, 2], "silver": [0, 2], "string_match": [0], "reviewed": true}
   ]
 }
 ```
 
-Page text is regenerated from `source` and `segmentor` rather than stored. `sample` picks a
+Page text is regenerated from `source` and `segmentor` rather than stored; `text_hash` records
+a fingerprint of it at labeling time, so a changed source can't move labels onto other text. `sample` picks a
 fixed, seeded subset of pages (`null` means every page). `targets` are hand-curated and frozen;
 `labels` are indices into them.
 

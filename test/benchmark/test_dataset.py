@@ -2,7 +2,17 @@ import json
 
 import pytest
 
-from benchmark.dataset import GoldDataset, GoldPage, load_dataset, save_dataset, string_match_labels
+import benchmark.dataset as dataset_module
+from benchmark.dataset import (
+    GoldDataset,
+    GoldPage,
+    gold_digest,
+    load_dataset,
+    page_hash,
+    save_dataset,
+    select_dataset_paths,
+    string_match_labels,
+)
 from textmancy.targets import Character
 
 
@@ -85,3 +95,54 @@ def test_save_and_load_round_trip(tmp_path):
     save_dataset(dataset, path)
     assert json.loads(path.read_text(encoding="utf-8"))["pages"][0]["labels"] == [0]
     assert load_dataset(path) == dataset
+
+
+def test_label_indices_must_be_valid_targets(tmp_path):
+    with pytest.raises(ValueError, match=r"page 0.*\[1\]"):
+        make_dataset(tmp_path, pages=[GoldPage(index=0, labels=[1], silver=[0], string_match=[])])
+
+
+def test_select_dataset_paths_defaults_to_all_and_filters_by_name(tmp_path, monkeypatch):
+    monkeypatch.setattr(dataset_module, "DATA_DIR", tmp_path)
+    for name in ("alpha", "beta"):
+        (tmp_path / f"{name}.json").write_text("{}", encoding="utf-8")
+
+    assert [p.stem for p in select_dataset_paths([])] == ["alpha", "beta"]
+    assert [p.stem for p in select_dataset_paths(["beta"])] == ["beta"]
+
+
+def test_select_dataset_paths_rejects_unknown_names(tmp_path, monkeypatch):
+    monkeypatch.setattr(dataset_module, "DATA_DIR", tmp_path)
+    (tmp_path / "alpha.json").write_text("{}", encoding="utf-8")
+
+    with pytest.raises(ValueError, match=r"alhpa.*alpha"):
+        select_dataset_paths(["alhpa"])
+
+
+def test_select_dataset_paths_rejects_empty_data_dir(tmp_path, monkeypatch):
+    monkeypatch.setattr(dataset_module, "DATA_DIR", tmp_path)
+
+    with pytest.raises(ValueError, match="No datasets"):
+        select_dataset_paths([])
+
+
+def test_stale_pages_flags_missing_and_mismatched_text_hashes(tmp_path):
+    dataset = make_dataset(tmp_path)
+    texts = dataset.page_texts()
+    dataset.pages = [
+        GoldPage(index=0, text_hash=page_hash(texts[0]), labels=[], silver=[], string_match=[]),
+        GoldPage(index=1, text_hash=page_hash("old text"), labels=[], silver=[], string_match=[]),
+        GoldPage(index=2, labels=[], silver=[], string_match=[]),
+    ]
+
+    assert dataset.stale_pages(texts) == [1, 2]
+
+
+def test_gold_digest_tracks_labels_and_text(tmp_path):
+    def digest(labels, text_hash="h"):
+        page = GoldPage(index=0, text_hash=text_hash, labels=labels, silver=[], string_match=[])
+        return gold_digest([make_dataset(tmp_path, pages=[page])])
+
+    assert digest([0]) == digest([0])
+    assert digest([0]) != digest([])
+    assert digest([0]) != digest([0], text_hash="other")

@@ -1,4 +1,4 @@
-from benchmark.dataset import GoldDataset, GoldPage
+from benchmark.dataset import GoldDataset, GoldPage, page_hash
 from benchmark.label import label_dataset_async, render_review_report
 from textmancy.components import LLMAnnotator
 from textmancy.targets import Character
@@ -35,7 +35,7 @@ def test_label_dataset_records_silver_and_string_match(tmp_path, recording_model
     dataset = make_dataset(tmp_path)
     annotator = LLMAnnotator(dataset.target_objects(), model=model.model)
 
-    labeled = run_sync(label_dataset_async(dataset, annotator))
+    labeled, failures = run_sync(label_dataset_async(dataset, annotator))
 
     assert [(p.index, p.silver, p.string_match, p.labels, p.reviewed) for p in labeled.pages] == [
         (0, [0], [0], [0], False),
@@ -43,6 +43,8 @@ def test_label_dataset_records_silver_and_string_match(tmp_path, recording_model
         (2, [0], [], [0], False),
     ]
     assert [p.index for p in labeled.unreviewed_disagreements()] == [1, 2]
+    assert labeled.pages[1].text_hash == page_hash("Bob runs.")
+    assert failures == {}
 
 
 def test_label_dataset_skips_existing_pages(tmp_path, recording_model):
@@ -51,10 +53,27 @@ def test_label_dataset_skips_existing_pages(tmp_path, recording_model):
     dataset = make_dataset(tmp_path, pages=[existing])
     annotator = LLMAnnotator(dataset.target_objects(), model=model.model)
 
-    labeled = run_sync(label_dataset_async(dataset, annotator))
+    labeled, failures = run_sync(label_dataset_async(dataset, annotator))
 
     assert len(model.calls) == 2
     assert labeled.pages[0] == existing
+
+
+def test_label_dataset_keeps_pages_that_succeed_when_one_fails(tmp_path, recording_model):
+    def respond(system, user, i):
+        if "Bob" in user:
+            raise RuntimeError("overloaded")
+        return [0]
+
+    model = recording_model(respond)
+    dataset = make_dataset(tmp_path)
+    annotator = LLMAnnotator(dataset.target_objects(), model=model.model)
+
+    labeled, failures = run_sync(label_dataset_async(dataset, annotator))
+
+    assert [p.index for p in labeled.pages] == [0, 2]
+    assert list(failures) == [1]
+    assert "overloaded" in str(failures[1])
 
 
 def test_review_report_lists_only_unreviewed_disagreements(tmp_path):

@@ -21,7 +21,7 @@ from pydantic import BaseModel
 from textmancy.components import Annotator, LLMAnnotator
 from textmancy.utils import chunk_input, gather_bounded
 
-from .dataset import REPO_ROOT, GoldDataset, dataset_paths, load_dataset
+from .dataset import REPO_ROOT, GoldDataset, gold_digest, load_dataset, select_dataset_paths
 from .metrics import Aggregator, best_config, score, sweep
 from .usage import UsageTracker, UsageTrackingModel, estimate_cost
 
@@ -49,9 +49,17 @@ def check_reviewed(datasets: Sequence[GoldDataset]) -> None:
     """Raises unless every page is labeled and every disagreement page is reviewed."""
     problems = []
     for dataset in datasets:
+        texts = dataset.page_texts()
         labeled = sorted(page.index for page in dataset.pages)
-        if labeled != dataset.page_indices():
+        if labeled != sorted(texts):
             problems.append(f"{dataset.name}: pages are unlabeled; run benchmark/label.py")
+            continue
+        stale = dataset.stale_pages(texts)
+        if stale:
+            problems.append(
+                f"{dataset.name}: pages {stale} have a missing or outdated text_hash; if the "
+                "source or segmentor changed, delete those pages and re-label them"
+            )
             continue
         unreviewed = [page.index for page in dataset.unreviewed_disagreements()]
         if unreviewed:
@@ -149,9 +157,9 @@ async def run_benchmark_async(
     }
 
 
-def result_path(annotator: str, model: str, day: date) -> Path:
+def result_path(annotator: str, model: str, day: date, digest: str) -> Path:
     slug = re.sub(r"[^A-Za-z0-9._-]", "-", model)
-    return RESULTS_DIR / f"{day.isoformat()}-{annotator}-{slug}.json"
+    return RESULTS_DIR / f"{day.isoformat()}-{annotator}-{slug}-{digest}.json"
 
 
 def load_results() -> list[dict]:
@@ -164,10 +172,16 @@ def _config(result: dict) -> str:
 
 
 def render_results_md(results: list[dict]) -> str:
-    """Renders the summary tables, with each run's F1 compared to the latest baseline."""
+    """
+    Renders the summary tables, with each run's F1 compared to the latest baseline scored on the
+    same gold data.
+    """
     results = sorted(results, key=lambda r: (r["date"], r["annotator"], r["model"]))
-    baselines = [r for r in results if (r["annotator"], r["model"]) == BASELINE]
-    baseline_f1 = baselines[-1]["metrics"]["overall"]["f1"] if baselines else None
+    baseline_f1 = {
+        r["gold_digest"]: r["metrics"]["overall"]["f1"]
+        for r in results
+        if (r["annotator"], r["model"]) == BASELINE and "gold_digest" in r
+    }
     lines = [
         "# Annotator Benchmark Results",
         "",
@@ -175,7 +189,8 @@ def render_results_md(results: list[dict]) -> str:
         "",
         "**Acceptance bar:** a candidate annotator's best-configuration F1 must be within "
         f"**{ACCEPTANCE_DELTA}** of the `{BASELINE[0]}` (`{BASELINE[1]}`) baseline F1 on the "
-        "same data.",
+        "same data. ΔF1 compares against the latest baseline with the same gold digest (dataset "
+        "selection, page text, and labels); — means there is none, so re-run the baseline.",
         "",
         "| Date | Annotator | Model | Config | P | R | F1 | ΔF1 vs baseline | Total s | s/page "
         "| Tokens in/out | Cost |",
@@ -183,7 +198,8 @@ def render_results_md(results: list[dict]) -> str:
     ]
     for r in results:
         m, lat, usage = r["metrics"]["overall"], r["latency"], r["usage"]
-        delta = "—" if baseline_f1 is None else f"{m['f1'] - baseline_f1:+.3f}"
+        base = baseline_f1.get(r.get("gold_digest"))
+        delta = "—" if base is None else f"{m['f1'] - base:+.3f}"
         cost = "—" if r.get("cost_usd") is None else f"${r['cost_usd']:.4f}"
         lines.append(
             f"| {r['date']} | {r['annotator']} | {r['model']} | {_config(r)} "
@@ -218,12 +234,10 @@ def main() -> None:
     args = parser.parse_args()
     dotenv.load_dotenv()
 
-    datasets = [
-        load_dataset(p) for p in dataset_paths() if not args.datasets or p.stem in args.datasets
-    ]
     try:
+        datasets = [load_dataset(path) for path in select_dataset_paths(args.datasets or [])]
         check_reviewed(datasets)
-    except UnreviewedPagesError as error:
+    except (ValueError, UnreviewedPagesError) as error:
         sys.exit(str(error))
 
     tracker = UsageTracker()
@@ -235,17 +249,19 @@ def main() -> None:
         run_benchmark_async(datasets, annotators, args.max_concurrency, args.chunk_size)
     )
     today = date.today()
+    digest = gold_digest(datasets)
     result = {
         "date": today.isoformat(),
         "annotator": args.annotator,
         "model": args.model,
         "datasets": [d.name for d in datasets],
+        "gold_digest": digest,
         "usage": tracker.as_dict(),
         "cost_usd": estimate_cost(args.model, tracker, args.price_in, args.price_out),
         **output,
     }
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    path = result_path(args.annotator, args.model, today)
+    path = result_path(args.annotator, args.model, today, digest)
     path.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     RESULTS_MD.write_text(render_results_md(load_results()), encoding="utf-8")
     overall = output["metrics"]["overall"]

@@ -208,6 +208,7 @@
   "pages": [
     {
       "index": 0,
+      "text_hash": "a187ac76939ffb8c",
       "labels": [
         0,
         1
@@ -224,6 +225,7 @@
     },
     {
       "index": 8,
+      "text_hash": "30abe0a467500904",
       "labels": [
         0,
         2,
@@ -241,6 +243,7 @@
     },
     {
       "index": 9,
+      "text_hash": "8cc052134725aaca",
       "labels": [
         0,
         8
@@ -256,6 +259,7 @@
     },
     {
       "index": 10,
+      "text_hash": "1db24b5358c07d26",
       "labels": [
         0,
         8
@@ -271,6 +275,7 @@
     },
     {
       "index": 11,
+      "text_hash": "e3f225520d71269f",
       "labels": [
         0,
         8
@@ -286,6 +291,7 @@
     },
     {
       "index": 15,
+      "text_hash": "81e42b97a7904388",
       "labels": [
         0,
         8
@@ -301,6 +307,7 @@
     },
     {
       "index": 17,
+      "text_hash": "31a6a0b2904a0147",
       "labels": [
         0,
         1,
@@ -320,6 +327,7 @@
     },
     {
       "index": 19,
+      "text_hash": "fc690636b160d0ea",
       "labels": [
         0
       ],
@@ -333,6 +341,7 @@
     },
     {
       "index": 25,
+      "text_hash": "7fc4fd08c8bbe34d",
       "labels": [
         0
       ],
@@ -346,6 +355,7 @@
     },
     {
       "index": 26,
+      "text_hash": "8c228bbeedd377fd",
       "labels": [
         0,
         2
@@ -361,6 +371,7 @@
     },
     {
       "index": 32,
+      "text_hash": "2ba9ef0d334dc94b",
       "labels": [
         0,
         1
@@ -376,6 +387,7 @@
     },
     {
       "index": 41,
+      "text_hash": "e5e2d8dfa6c8d56f",
       "labels": [
         0,
         1
@@ -392,6 +404,7 @@
     },
     {
       "index": 45,
+      "text_hash": "b7d46cdcbc414073",
       "labels": [
         0,
         1
@@ -407,6 +420,7 @@
     },
     {
       "index": 48,
+      "text_hash": "644881209e8f7def",
       "labels": [
         0,
         1
@@ -422,6 +436,7 @@
     },
     {
       "index": 49,
+      "text_hash": "baa596b2fcc493bc",
       "labels": [
         0,
         1
@@ -438,6 +453,7 @@
     },
     {
       "index": 57,
+      "text_hash": "3e3c804516efa918",
       "labels": [
         0,
         1
@@ -454,6 +470,7 @@
     },
     {
       "index": 61,
+      "text_hash": "c2eec9ef7dd75f87",
       "labels": [
         0
       ],
@@ -467,6 +484,7 @@
     },
     {
       "index": 70,
+      "text_hash": "b122bdd895f51c36",
       "labels": [
         0,
         9
@@ -482,6 +500,7 @@
     },
     {
       "index": 72,
+      "text_hash": "1997a0947ea323f8",
       "labels": [
         0,
         9
@@ -497,6 +516,7 @@
     },
     {
       "index": 73,
+      "text_hash": "e85f767c407ff10f",
       "labels": [
         0,
         9
@@ -512,6 +532,7 @@
     },
     {
       "index": 75,
+      "text_hash": "b4897563d0438797",
       "labels": [
         0,
         9
@@ -527,6 +548,7 @@
     },
     {
       "index": 77,
+      "text_hash": "6f6fae20edafd17a",
       "labels": [
         0,
         9
@@ -540,6 +562,7 @@
     },
     {
       "index": 78,
+      "text_hash": "5ce1c56c3af0201e",
       "labels": [
         0,
         9
@@ -555,6 +578,7 @@
     },
     {
       "index": 86,
+      "text_hash": "b58141e084bfb803",
       "labels": [
         0,
         15
@@ -570,6 +594,7 @@
     },
     {
       "index": 100,
+      "text_hash": "dc643ff73d16acbe",
       "labels": [
         0,
         2,
@@ -589,6 +614,7 @@
     },
     {
       "index": 102,
+      "text_hash": "d6a8627230b8cf93",
       "labels": [
         0,
         9,
@@ -606,6 +632,7 @@
     },
     {
       "index": 108,
+      "text_hash": "480af7a3ba9f096c",
       "labels": [
         0,
         9,
@@ -623,6 +650,7 @@
     },
     {
       "index": 113,
+      "text_hash": "bbc429530ba531e6",
       "labels": [
         0,
         1,
@@ -642,6 +670,7 @@
     },
     {
       "index": 117,
+      "text_hash": "c14ad1ab34928cf8",
       "labels": [
         0,
         10
@@ -657,6 +686,7 @@
     },
     {
       "index": 121,
+      "text_hash": "287c60cb1bf43891",
       "labels": [
         0,
         1,
@@ -675,6 +705,7 @@
     },
     {
       "index": 124,
+      "text_hash": "3541e3c26a44c123",
       "labels": [
         0,
         10
@@ -693,6 +724,7 @@
     },
     {
       "index": 129,
+      "text_hash": "2d62256a33be39ee",
       "labels": [],
       "silver": [],
       "string_match": [],
@@ -700,6 +732,7 @@
     },
     {
       "index": 137,
+      "text_hash": "da7ba225c9c3a3f0",
       "labels": [
         0,
         2,
@@ -721,6 +754,7 @@
     },
     {
       "index": 139,
+      "text_hash": "180a53befd7a2bb3",
       "labels": [
         2,
         3,
@@ -745,6 +779,7 @@
     },
     {
       "index": 142,
+      "text_hash": "e43512889419d1fc",
       "labels": [
         2,
         3,
@@ -767,6 +802,7 @@
     },
     {
       "index": 149,
+      "text_hash": "98e14b2c2dc5ec72",
       "labels": [
         2,
         3,
@@ -790,6 +826,7 @@
     },
     {
       "index": 151,
+      "text_hash": "a859a14ac249cde0",
       "labels": [
         0,
         4,
@@ -807,6 +844,7 @@
     },
     {
       "index": 155,
+      "text_hash": "afb0500088c4bd46",
       "labels": [
         5,
         6
@@ -823,6 +861,7 @@
     },
     {
       "index": 158,
+      "text_hash": "f1e57d2ea5c8f20d",
       "labels": [],
       "silver": [],
       "string_match": [],
@@ -830,6 +869,7 @@
     },
     {
       "index": 169,
+      "text_hash": "b3eb15003b348c00",
       "labels": [
         0,
         8
@@ -845,6 +885,7 @@
     },
     {
       "index": 171,
+      "text_hash": "93d9801e642b6aff",
       "labels": [
         0,
         8
@@ -860,6 +901,7 @@
     },
     {
       "index": 172,
+      "text_hash": "2e1663869082d457",
       "labels": [
         0,
         2,
@@ -877,6 +919,7 @@
     },
     {
       "index": 177,
+      "text_hash": "c9de00b9bf50ae73",
       "labels": [
         0,
         8,
@@ -897,6 +940,7 @@
     },
     {
       "index": 179,
+      "text_hash": "9a8d90e57e442fa0",
       "labels": [
         0,
         8
@@ -910,6 +954,7 @@
     },
     {
       "index": 183,
+      "text_hash": "a48590ae873fe579",
       "labels": [
         0,
         10
@@ -925,6 +970,7 @@
     },
     {
       "index": 187,
+      "text_hash": "2eaaf8d5f0c908b4",
       "labels": [
         0,
         1,
@@ -946,6 +992,7 @@
     },
     {
       "index": 188,
+      "text_hash": "3712e70605e3b927",
       "labels": [
         0,
         11
@@ -962,6 +1009,7 @@
     },
     {
       "index": 189,
+      "text_hash": "6ac4e93443ea8aed",
       "labels": [
         0,
         11
@@ -978,6 +1026,7 @@
     },
     {
       "index": 202,
+      "text_hash": "50d0df5244afa5da",
       "labels": [
         17,
         18
@@ -993,6 +1042,7 @@
     },
     {
       "index": 207,
+      "text_hash": "59740d895dde8f46",
       "labels": [
         17,
         18
@@ -1009,6 +1059,7 @@
     },
     {
       "index": 209,
+      "text_hash": "ca061f660d212990",
       "labels": [
         0,
         17
@@ -1024,6 +1075,7 @@
     },
     {
       "index": 212,
+      "text_hash": "be58bf298be7dcd3",
       "labels": [
         0,
         11
@@ -1039,6 +1091,7 @@
     },
     {
       "index": 213,
+      "text_hash": "8ce19ec6bd54872b",
       "labels": [
         0,
         11
@@ -1055,6 +1108,7 @@
     },
     {
       "index": 216,
+      "text_hash": "9d7674b31e4e8a64",
       "labels": [
         0,
         11,
@@ -1073,6 +1127,7 @@
     },
     {
       "index": 227,
+      "text_hash": "6db5b0bc9f227dd2",
       "labels": [
         2,
         3,
@@ -1093,6 +1148,7 @@
     },
     {
       "index": 231,
+      "text_hash": "79178da7988be20d",
       "labels": [
         0,
         11
@@ -1109,6 +1165,7 @@
     },
     {
       "index": 232,
+      "text_hash": "59de92bb4e7c7600",
       "labels": [
         0,
         11
@@ -1125,6 +1182,7 @@
     },
     {
       "index": 235,
+      "text_hash": "013c5a8522d29e94",
       "labels": [
         0,
         11
@@ -1138,6 +1196,7 @@
     },
     {
       "index": 244,
+      "text_hash": "4956e335e8d81b92",
       "labels": [
         0,
         2,
@@ -1157,6 +1216,7 @@
     },
     {
       "index": 253,
+      "text_hash": "e71b30736abe8cb1",
       "labels": [
         0,
         2,

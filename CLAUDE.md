@@ -75,7 +75,8 @@ Tests never call real providers: `test/conftest.py` sets `pydantic_ai.models.ALL
 `benchmark/` (not shipped in the package) scores annotators against frozen targets and
 human-reviewed page labels in `benchmark/data/*.json`. `label.py` writes silver labels plus a
 review report of pages where the LLM and an alias string match disagree; `run.py` refuses to run
-until those pages are `reviewed: true`, then writes `benchmark/results/*.json` and regenerates
+until those pages are `reviewed: true` and every page's `text_hash` matches its regenerated text,
+then writes `benchmark/results/*.json` (named with a digest of the gold data) and regenerates
 `RESULTS.md`. A candidate annotator's best F1 must be within 0.05 of the `openai:gpt-4o`
 `LLMAnnotator` baseline. Its logic is unit-tested in `test/benchmark/`.
 

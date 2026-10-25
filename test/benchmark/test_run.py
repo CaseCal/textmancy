@@ -2,7 +2,7 @@ from datetime import date
 
 import pytest
 
-from benchmark.dataset import GoldDataset, GoldPage
+from benchmark.dataset import GoldDataset, GoldPage, page_hash
 from benchmark.run import (
     UnreviewedPagesError,
     check_reviewed,
@@ -29,7 +29,7 @@ def make_dataset(tmp_path, name="book", pages=None):
             GoldPage(index=0, labels=[0], silver=[0], string_match=[0]),
             GoldPage(index=1, labels=[1], silver=[1], string_match=[1]),
         ]
-    return GoldDataset(
+    dataset = GoldDataset(
         name=name,
         source=str(source),
         segmentor={"type": "PageSegmentor", "paragraphs_per_page": 1},
@@ -37,6 +37,10 @@ def make_dataset(tmp_path, name="book", pages=None):
         targets=[make_character("Ann").model_dump(), make_character("Bob").model_dump()],
         pages=pages,
     )
+    texts = dataset.page_texts()
+    for page in dataset.pages:
+        page.text_hash = page_hash(texts[page.index])
+    return dataset
 
 
 def test_check_reviewed_raises_on_unreviewed_disagreement(tmp_path):
@@ -52,6 +56,14 @@ def test_check_reviewed_raises_on_unlabeled_pages(tmp_path):
     pages = [GoldPage(index=0, labels=[0], silver=[0], string_match=[0])]
     with pytest.raises(UnreviewedPagesError, match="label.py"):
         check_reviewed([make_dataset(tmp_path, pages=pages)])
+
+
+def test_check_reviewed_raises_when_page_text_changed(tmp_path):
+    dataset = make_dataset(tmp_path)
+    (tmp_path / "book.txt").write_text("Ann walks.\nBob sprints.", encoding="utf-8")
+
+    with pytest.raises(UnreviewedPagesError, match=r"book.*\[1\].*text_hash"):
+        check_reviewed([dataset])
 
 
 def test_check_reviewed_passes_when_clean(tmp_path):
@@ -138,16 +150,17 @@ def test_run_scores_each_chunk_separately(tmp_path):
 
 
 def test_result_path_slugs_model():
-    path = result_path("llm", "openai:gpt-4o", date(2026, 10, 24))
-    assert path.name == "2026-10-24-llm-openai-gpt-4o.json"
+    path = result_path("llm", "openai:gpt-4o", date(2026, 10, 24), "0123456789ab")
+    assert path.name == "2026-10-24-llm-openai-gpt-4o-0123456789ab.json"
 
 
-def make_result(annotator, model, f1, day="2026-10-24", config=None):
+def make_result(annotator, model, f1, day="2026-10-24", config=None, gold="g1"):
     metrics = {"tp": 1, "fp": 0, "fn": 0, "precision": 0.9, "recall": 0.8, "f1": f1}
     return {
         "date": day,
         "annotator": annotator,
         "model": model,
+        "gold_digest": gold,
         "best_config": config,
         "metrics": {"overall": metrics, "per_dataset": {"book": metrics}},
         "latency": {"total_seconds": 12.0, "mean_page_seconds": 1.5, "pages": 8},
@@ -175,3 +188,17 @@ def test_results_md_without_baseline_uses_dash():
     md = render_results_md([make_result("jev", "jev-latest", 0.8)])
     row = next(line for line in md.splitlines() if "| jev |" in line)
     assert "| — |" in row
+
+
+def test_results_md_compares_only_against_baseline_on_same_gold():
+    md = render_results_md(
+        [
+            make_result("llm", "openai:gpt-4o", 0.83, day="2026-10-24", gold="g1"),
+            make_result("llm", "openai:gpt-4o", 0.90, day="2026-10-25", gold="g2"),
+            make_result("jev", "jev-a", 0.80, day="2026-10-26", gold="g1"),
+            make_result("jev", "jev-b", 0.80, day="2026-10-26", gold="g3"),
+        ]
+    )
+    rows = md.splitlines()
+    assert "-0.030" in next(line for line in rows if "| jev-a |" in line)
+    assert "| — |" in next(line for line in rows if "| jev-b |" in line)
