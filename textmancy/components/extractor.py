@@ -24,7 +24,7 @@ class Extractor:
         target_class: type[BaseModel],
         target_num: int = 3,
         target_examples: Optional[list[BaseModel]] = None,
-        model: Union[str, Model] = "openai:gpt-4o",
+        model: Union[str, Model] = "openai-chat:gpt-4o",
         additional_instructions: str = "",
         max_concurrency: int = 10,
         retries: int = 1,
@@ -90,10 +90,13 @@ class Extractor:
             All extracted targets, in chunk order.
         """
         chunks = utils.chunk_input(input_data, chunk_size)
-        results = await utils.gather_bounded(
-            (self._extract_from_block_async(chunk, number) for chunk in chunks),
-            self.max_concurrency,
-        )
+        # Entering the agent resolves a model string once per call and opens the provider's HTTP
+        # client on the running loop, closing it on exit.
+        async with self.agent:
+            results = await utils.gather_bounded(
+                (self._extract_from_block_async(chunk, number) for chunk in chunks),
+                self.max_concurrency,
+            )
         self._logger.debug(f"Extracted from {len(chunks)} chunks")
         return [target for chunk_result in results for target in chunk_result]
 

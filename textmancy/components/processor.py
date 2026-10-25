@@ -22,7 +22,7 @@ class Processor:
         self,
         target_class: type[BaseModel],
         target_num: int = 3,
-        model: Union[str, Model] = "openai:gpt-4o",
+        model: Union[str, Model] = "openai-chat:gpt-4o",
         extractor_args: Optional[dict] = None,
         consolidator_args: Optional[dict] = None,
     ):
@@ -31,7 +31,7 @@ class Processor:
         self.extractor = Extractor(
             target_class=target_class,
             model=model,
-            target_num=int(target_num * 0.6),  # Extractor extracts 60% of the targets
+            target_num=max(1, int(target_num * 0.6)),  # Extractor extracts 60% of the targets
             **(extractor_args or {}),
         )
         self.consolidator = Consolidator(

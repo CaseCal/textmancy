@@ -77,3 +77,12 @@ def test_extract_async(recording_model):
     result = asyncio.run(extractor.extract_async("some text"))
 
     assert [t.name for t in result] == ["x"]
+
+
+def test_extract_model_string_reuses_one_connection_per_call(openai_stub):
+    openai_stub.response = [_theme("a")]
+    extractor = Extractor(Theme, model="openai-chat:gpt-4o", max_concurrency=1)
+
+    assert len(extractor.extract("x" * 30, chunk_size=10)) == 3
+    assert len(openai_stub.ports) == 3
+    assert len(set(openai_stub.ports)) == 1

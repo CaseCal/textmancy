@@ -26,7 +26,7 @@ class Consolidator:
         self,
         target_class: type[BaseModel],
         target_num: int = 3,
-        model: Union[str, Model] = "openai:gpt-4o",
+        model: Union[str, Model] = "openai-chat:gpt-4o",
         batch_size: int = 10,
         max_iter: int = 3,
         tolerance: float = 1.5,
@@ -88,14 +88,20 @@ class Consolidator:
             The consolidated targets.
         """
         batches = [items[i : i + self.batch_size] for i in range(0, len(items), self.batch_size)]
-        results = await utils.gather_bounded(
-            (self._consolidate_batch_async(batch) for batch in batches),
-            self.max_concurrency,
-        )
-        consolidated = [target for batch_result in results for target in batch_result]
+        # Entering the agent resolves a model string once per call and opens the provider's HTTP
+        # client on the running loop, closing it on exit. Recursive passes re-enter as a no-op.
+        async with self.agent:
+            results = await utils.gather_bounded(
+                (self._consolidate_batch_async(batch) for batch in batches),
+                self.max_concurrency,
+            )
+            consolidated = [target for batch_result in results for target in batch_result]
 
-        if len(consolidated) >= self.target_num * self.tolerance and current_iter < self.max_iter:
-            return await self.consolidate_async(consolidated, current_iter + 1)
+            if (
+                len(consolidated) >= self.target_num * self.tolerance
+                and current_iter < self.max_iter
+            ):
+                return await self.consolidate_async(consolidated, current_iter + 1)
 
         return consolidated
 

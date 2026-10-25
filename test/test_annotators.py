@@ -2,6 +2,7 @@ import asyncio
 
 import pytest
 from pydantic_ai.exceptions import UnexpectedModelBehavior
+from pydantic_ai.models import infer_model
 
 from textmancy.components.annotators import Annotator, LLMAnnotator
 from textmancy.targets import Theme
@@ -74,3 +75,19 @@ def test_llm_annotator_async(recording_model):
     annotator = LLMAnnotator(THEMES, model=rec.model)
 
     assert asyncio.run(annotator.annotate_async("alpha")) == {0}
+
+
+def test_llm_annotator_model_string_reuses_one_connection_per_call(openai_stub):
+    annotator = LLMAnnotator(THEMES, model="openai-chat:gpt-4o", max_concurrency=1)
+
+    assert annotator.annotate("x" * 30, chunk_size=10) == {0}
+    assert len(openai_stub.ports) == 3
+    assert len(set(openai_stub.ports)) == 1
+
+
+def test_llm_annotator_shared_model_works_across_event_loops(openai_stub):
+    annotator = LLMAnnotator(THEMES, model=infer_model("openai-chat:gpt-4o"))
+
+    assert annotator.annotate("x") == {0}
+    assert asyncio.run(annotator.annotate_async("x")) == {0}
+    assert annotator.annotate("x") == {0}

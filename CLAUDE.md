@@ -29,7 +29,7 @@ poetry build
 
 ## Architecture
 
-Textmancy is a Python library for LLM-driven text analysis. It extracts, consolidates, and annotates features (e.g. characters, themes) from literary text using Pydantic AI. It is model-agnostic: every LLM component takes a Pydantic AI model string such as `"openai:gpt-4o"` or `"anthropic:claude-sonnet-5-5"`, or a `Model` instance.
+Textmancy is a Python library for LLM-driven text analysis. It extracts, consolidates, and annotates features (e.g. characters, themes) from literary text using Pydantic AI. It is model-agnostic: every LLM component takes a Pydantic AI model string such as `"openai-chat:gpt-4o"` or `"anthropic:claude-sonnet-5-5"`, or a `Model` instance.
 
 Every LLM component is async-first: `extract_async`, `consolidate_async`, `process_async`, `annotate_async`, each with a sync wrapper (`extract`, …) built on `utils.run_sync`. Concurrency is bounded by `max_concurrency` (default 10) via `utils.gather_bounded`.
 

@@ -39,6 +39,15 @@ def test_processor_passes_target_num_and_args(recording_model):
     assert any("CONSOLIDATE-EXTRA" in c["system"] for c in rec.calls)
 
 
+def test_processor_asks_extractor_for_at_least_one_target(recording_model):
+    rec = recording_model(_respond)
+    processor = Processor(Theme, target_num=1, model=rec.model)
+
+    processor.process(["some text"])
+
+    assert "around 1 Themes" in rec.calls[0]["user"]
+
+
 def test_processor_constructs_without_api_key(monkeypatch):
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
 

@@ -70,3 +70,14 @@ def test_consolidate_async(recording_model):
     result = asyncio.run(consolidator.consolidate_async(_themes(2)))
 
     assert [t.name for t in result] == ["t0"]
+
+
+def test_consolidate_model_string_reuses_one_connection_per_call(openai_stub):
+    openai_stub.response = [{"name": "a", "reasoning": "r"}]
+    consolidator = Consolidator(
+        Theme, target_num=10, batch_size=1, model="openai-chat:gpt-4o", max_concurrency=1
+    )
+
+    assert len(consolidator.consolidate(_themes(3))) == 3
+    assert len(openai_stub.ports) == 3
+    assert len(set(openai_stub.ports)) == 1

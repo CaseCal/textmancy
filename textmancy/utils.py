@@ -1,4 +1,6 @@
 import asyncio
+import contextlib
+import inspect
 import threading
 from typing import Any, Awaitable, Coroutine, Generator, Iterable, TypeVar, Union
 
@@ -70,7 +72,9 @@ def run_sync(coro: Coroutine[Any, Any, T]) -> T:
 
     The coroutine runs on a persistent per-thread event loop that is reused across calls, so
     objects bound to a loop (such as a user-supplied Pydantic AI Model's HTTP client) keep
-    working on repeated calls. This mirrors Pydantic AI's own Agent.run_sync.
+    working on repeated calls. If the call is interrupted (e.g. by Ctrl-C), its task is cancelled
+    and cleaned up before the exception propagates, so its work doesn't resume on the next call.
+    This mirrors Pydantic AI's own Agent.run_sync.
 
     Raises:
         RuntimeError: If called while an event loop is already running (e.g. Jupyter). Await the
@@ -79,11 +83,24 @@ def run_sync(coro: Coroutine[Any, Any, T]) -> T:
     try:
         asyncio.get_running_loop()
     except RuntimeError:
-        return _thread_loop().run_until_complete(coro)
-    coro.close()
-    raise RuntimeError(
-        "Cannot run synchronously inside a running event loop; await the *_async method instead."
-    )
+        pass
+    else:
+        coro.close()
+        raise RuntimeError(
+            "Cannot run synchronously inside a running event loop; "
+            "await the *_async method instead."
+        )
+
+    loop = _thread_loop()
+    task = loop.create_task(coro)
+    try:
+        return loop.run_until_complete(task)
+    except BaseException:
+        if not task.done():
+            task.cancel()
+            with contextlib.suppress(BaseException):
+                loop.run_until_complete(task)
+        raise
 
 
 async def gather_bounded(coros: Iterable[Awaitable[T]], limit: int) -> list[T]:
@@ -99,6 +116,7 @@ async def gather_bounded(coros: Iterable[Awaitable[T]], limit: int) -> list[T]:
         async with semaphore:
             return await coro
 
+    coros = list(coros)
     tasks = [asyncio.ensure_future(_bounded(c)) for c in coros]
     try:
         return list(await asyncio.gather(*tasks))
@@ -106,4 +124,9 @@ async def gather_bounded(coros: Iterable[Awaitable[T]], limit: int) -> list[T]:
         for task in tasks:
             task.cancel()
         await asyncio.gather(*tasks, return_exceptions=True)
+        # Coroutines cancelled while waiting for a slot never started; close them so Python
+        # doesn't warn that they were never awaited. Closing a finished coroutine is a no-op.
+        for coro in coros:
+            if inspect.iscoroutine(coro):
+                coro.close()
         raise

@@ -1,11 +1,8 @@
 import asyncio
-import json
-import threading
+import gc
 import time
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 import pytest
-from pydantic_ai import models
 from pydantic_ai.models.openai import OpenAIChatModel
 from pydantic_ai.providers.openai import OpenAIProvider
 
@@ -74,6 +71,28 @@ def test_run_sync_returns_result():
     assert run_sync(_value(42)) == 42
 
 
+def test_run_sync_cancels_work_left_by_an_interrupted_call():
+    state = {"finished": 0}
+
+    async def slow():
+        await asyncio.sleep(0.05)
+        state["finished"] += 1
+
+    def interrupt():
+        raise KeyboardInterrupt
+
+    async def main():
+        # Raised from a loop callback, the way Ctrl-C reaches run_until_complete.
+        asyncio.get_running_loop().call_later(0.01, interrupt)
+        await gather_bounded([slow(), slow()], limit=2)
+
+    with pytest.raises(KeyboardInterrupt):
+        run_sync(main())
+    run_sync(asyncio.sleep(0.1))
+
+    assert state["finished"] == 0
+
+
 def test_run_sync_inside_running_loop_raises():
     async def outer():
         with pytest.raises(RuntimeError, match="_async"):
@@ -130,63 +149,21 @@ def test_gather_bounded_cancels_siblings_on_failure():
     assert time.monotonic() - start < 1
 
 
-@pytest.fixture
-def openai_stub_url():
-    class Handler(BaseHTTPRequestHandler):
-        protocol_version = "HTTP/1.1"
+def test_gather_bounded_closes_unstarted_coroutines_on_failure(recwarn):
+    async def boom():
+        await asyncio.sleep(0)
+        raise ValueError("boom")
 
-        def log_message(self, *args):
-            pass
+    with pytest.raises(ValueError, match="boom"):
+        asyncio.run(gather_bounded([boom(), *(_value(i) for i in range(3))], limit=1))
+    gc.collect()
 
-        def do_POST(self):
-            body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
-            tool = body["tools"][0]["function"]["name"]
-            reply = {
-                "id": "stub",
-                "object": "chat.completion",
-                "created": 0,
-                "model": "gpt-4o",
-                "choices": [
-                    {
-                        "index": 0,
-                        "finish_reason": "tool_calls",
-                        "message": {
-                            "role": "assistant",
-                            "content": None,
-                            "tool_calls": [
-                                {
-                                    "id": "call_1",
-                                    "type": "function",
-                                    "function": {
-                                        "name": tool,
-                                        "arguments": json.dumps({"response": [0]}),
-                                    },
-                                }
-                            ],
-                        },
-                    }
-                ],
-                "usage": {"prompt_tokens": 1, "completion_tokens": 1, "total_tokens": 2},
-            }
-            data = json.dumps(reply).encode()
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self.send_header("Content-Length", str(len(data)))
-            self.end_headers()
-            self.wfile.write(data)
-
-    server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
-    thread = threading.Thread(target=server.serve_forever, daemon=True)
-    thread.start()
-    yield f"http://127.0.0.1:{server.server_port}/v1"
-    server.shutdown()
-    server.server_close()
+    assert not [w for w in recwarn if "never awaited" in str(w.message)]
 
 
-def test_repeated_sync_calls_reuse_model_instance(monkeypatch, openai_stub_url):
-    monkeypatch.setattr(models, "ALLOW_MODEL_REQUESTS", True)
+def test_repeated_sync_calls_reuse_model_instance(openai_stub):
     model = OpenAIChatModel(
-        "gpt-4o", provider=OpenAIProvider(base_url=openai_stub_url, api_key="test")
+        "gpt-4o", provider=OpenAIProvider(base_url=openai_stub.url, api_key="test")
     )
     annotator = LLMAnnotator([Theme(name="a", reasoning="r")], model=model)
 
