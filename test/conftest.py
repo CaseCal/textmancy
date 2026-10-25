@@ -1,3 +1,4 @@
+import threading
 from typing import Any, Callable
 
 import pytest
@@ -30,14 +31,17 @@ class RecordingModel:
     def __init__(self, respond: Responder):
         self.calls: list[dict[str, str]] = []
         self._respond = respond
+        self._lock = threading.Lock()
         self.model = FunctionModel(self._handle)
 
     def _handle(self, messages: list[ModelMessage], info: AgentInfo) -> ModelResponse:
         parts = [part for message in messages for part in getattr(message, "parts", [])]
         system = "".join(p.content for p in parts if isinstance(p, SystemPromptPart))
         user = next(p.content for p in parts if isinstance(p, UserPromptPart))
-        self.calls.append({"system": system, "user": user})
-        output = self._respond(system, user, len(self.calls) - 1)
+        with self._lock:
+            self.calls.append({"system": system, "user": user})
+            call_index = len(self.calls) - 1
+        output = self._respond(system, user, call_index)
         return ModelResponse(parts=[ToolCallPart(info.output_tools[0].name, {"response": output})])
 
 

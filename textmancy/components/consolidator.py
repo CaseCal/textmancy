@@ -70,7 +70,7 @@ class Consolidator:
         return prompt
 
     async def _consolidate_batch_async(self, targets: list[BaseModel]) -> list[BaseModel]:
-        payload = json.dumps([t.model_dump() for t in targets], indent=2)
+        payload = json.dumps([t.model_dump(mode="json") for t in targets], indent=2)
         result = await self.agent.run(f"{self.target_name}s to consolidate:\n{payload}")
         return result.output or []
 

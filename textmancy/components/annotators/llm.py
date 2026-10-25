@@ -39,7 +39,8 @@ class LLMAnnotator(Annotator):
 
     def _create_system_prompt(self) -> str:
         listing = "\n".join(
-            f"[{i}] {json.dumps(target.model_dump())}" for i, target in enumerate(self.targets)
+            f"[{i}] {json.dumps(target.model_dump(mode='json'))}"
+            for i, target in enumerate(self.targets)
         )
         return (
             f"You are annotating a text sample to identify {self.target_name}s. "

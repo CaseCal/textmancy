@@ -28,3 +28,10 @@ for page in pages:
 ```
 
 Every component also has an async variant (`process_async`, `annotate_async`, …) for use inside an event loop.
+
+## Migrating from 0.3
+
+- Model names now use Pydantic AI's `provider:model` form: `model="gpt-4o"` becomes `model="openai:gpt-4o"`.
+- `Annotator` is now an abstract base class; use `LLMAnnotator` (same `targets`/`model` arguments).
+- Every component has an `*_async` variant; the sync methods cannot be called from inside a running event loop.
+- `LLMAnnotator` only accepts valid target indices from the model and retries otherwise (previously invalid indices were silently dropped).

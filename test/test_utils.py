@@ -1,7 +1,16 @@
 import asyncio
+import json
+import threading
+import time
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 import pytest
+from pydantic_ai import models
+from pydantic_ai.models.openai import OpenAIChatModel
+from pydantic_ai.providers.openai import OpenAIProvider
 
+from textmancy.components import LLMAnnotator
+from textmancy.targets import Theme
 from textmancy.utils import chunk_input, gather_bounded, run_sync, text_generator
 
 
@@ -92,3 +101,94 @@ def test_gather_bounded_respects_limit_and_preserves_order():
 def test_gather_bounded_rejects_non_positive_limit():
     with pytest.raises(ValueError, match="limit"):
         asyncio.run(gather_bounded([], limit=0))
+
+
+def test_gather_bounded_cancels_siblings_on_failure():
+    state = {"finished": 0, "cancelled": 0}
+
+    async def boom():
+        await asyncio.sleep(0.01)
+        raise ValueError("boom")
+
+    async def slow():
+        try:
+            await asyncio.sleep(5)
+            state["finished"] += 1
+        except asyncio.CancelledError:
+            state["cancelled"] += 1
+            raise
+
+    async def main():
+        with pytest.raises(ValueError, match="boom"):
+            await gather_bounded([boom(), slow(), slow()], limit=3)
+        # Siblings must already be cancelled when gather_bounded returns, not at loop shutdown.
+        assert state == {"finished": 0, "cancelled": 2}
+
+    start = time.monotonic()
+    asyncio.run(main())
+
+    assert time.monotonic() - start < 1
+
+
+@pytest.fixture
+def openai_stub_url():
+    class Handler(BaseHTTPRequestHandler):
+        protocol_version = "HTTP/1.1"
+
+        def log_message(self, *args):
+            pass
+
+        def do_POST(self):
+            body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+            tool = body["tools"][0]["function"]["name"]
+            reply = {
+                "id": "stub",
+                "object": "chat.completion",
+                "created": 0,
+                "model": "gpt-4o",
+                "choices": [
+                    {
+                        "index": 0,
+                        "finish_reason": "tool_calls",
+                        "message": {
+                            "role": "assistant",
+                            "content": None,
+                            "tool_calls": [
+                                {
+                                    "id": "call_1",
+                                    "type": "function",
+                                    "function": {
+                                        "name": tool,
+                                        "arguments": json.dumps({"response": [0]}),
+                                    },
+                                }
+                            ],
+                        },
+                    }
+                ],
+                "usage": {"prompt_tokens": 1, "completion_tokens": 1, "total_tokens": 2},
+            }
+            data = json.dumps(reply).encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+
+    server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    yield f"http://127.0.0.1:{server.server_port}/v1"
+    server.shutdown()
+    server.server_close()
+
+
+def test_repeated_sync_calls_reuse_model_instance(monkeypatch, openai_stub_url):
+    monkeypatch.setattr(models, "ALLOW_MODEL_REQUESTS", True)
+    model = OpenAIChatModel(
+        "gpt-4o", provider=OpenAIProvider(base_url=openai_stub_url, api_key="test")
+    )
+    annotator = LLMAnnotator([Theme(name="a", reasoning="r")], model=model)
+
+    for _ in range(3):
+        assert annotator.annotate("x" * 30, chunk_size=10) == {0}

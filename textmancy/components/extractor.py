@@ -61,7 +61,7 @@ class Extractor:
         if additional_instructions:
             prompt += f"\n{additional_instructions}"
         if examples:
-            prompt += f"\nExamples: {json.dumps([e.model_dump() for e in examples])}"
+            prompt += f"\nExamples: {json.dumps([e.model_dump(mode='json') for e in examples])}"
         return prompt
 
     async def _extract_from_block_async(
