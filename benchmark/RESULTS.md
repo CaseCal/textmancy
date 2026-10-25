@@ -8,12 +8,12 @@ For annotators that tune an aggregator and threshold, P, R, and F1 are 2-fold cr
 
 | Date | Annotator | Model | Config | P | R | F1 | ΔF1 vs baseline | Total s | s/page | Tokens in/out | Cost |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 2026-10-25 | jev | jev-latest | max @ 0.30 | 0.861 | 0.864 | 0.863 | +0.011 | 1.2 | 0.09 | 345599 / 35366 | $0.0145 |
+| 2026-10-25 | jev | jev-latest | max @ 0.35 | 0.871 | 0.843 | 0.857 | +0.005 | 1.1 | 0.08 | 345599 / 35366 | $0.0145 |
 | 2026-10-25 | llm | openai:gpt-4o | — | 0.968 | 0.761 | 0.852 | +0.000 | 13.5 | 1.00 | 190493 / 987 | $0.4861 |
 
 ## F1 by dataset
 
 | Date | Annotator | Model | christmas_carol | snows_of_kilimanjaro |
 |---|---|---|---|---|
-| 2026-10-25 | jev | jev-latest | 0.838 | 0.894 |
+| 2026-10-25 | jev | jev-latest | 0.842 | 0.875 |
 | 2026-10-25 | llm | openai:gpt-4o | 0.888 | 0.810 |
