@@ -12,10 +12,12 @@ thefuzz = "^0.20.0"
 pydantic-ai-slim = {version = "^2.54.0", extras = ["openai"]}
 anthropic = {version = ">=1.9.0", optional = true}
 google-genai = {version = ">=2.25.0", optional = true}
+typesafe-sdk = {version = "^0.7.5", optional = true}
 
 [tool.poetry.extras]
 anthropic = ["anthropic"]
 google = ["google-genai"]
+jev = ["typesafe-sdk"]
 
 [tool.poetry.group.dev.dependencies]
 bump2version = "^1.0.1"
@@ -41,7 +43,8 @@ line_length = 100
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
-addopts = ["--cov=textmancy", "--cov-report=term-missing"]
+addopts = ["--cov=textmancy", "--cov-report=term-missing", "-m", "not live"]
+markers = ["live: calls a real paid API; run with -m live"]
 
 [tool.coverage.run]
 omit = ["tests/*", "targets.py", "*/__init__.py"]
