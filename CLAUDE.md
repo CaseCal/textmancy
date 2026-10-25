@@ -29,7 +29,9 @@ poetry build
 
 ## Architecture
 
-Textmancy is a Python library for LLM-driven text analysis. It extracts, consolidates, and annotates features (e.g. characters, themes) from literary text using LangChain + OpenAI.
+Textmancy is a Python library for LLM-driven text analysis. It extracts, consolidates, and annotates features (e.g. characters, themes) from literary text using Pydantic AI. It is model-agnostic: every LLM component takes a Pydantic AI model string such as `"openai:gpt-4o"` or `"anthropic:claude-sonnet-5-5"`, or a `Model` instance.
+
+Every LLM component is async-first: `extract_async`, `consolidate_async`, `process_async`, `annotate_async`, each with a sync wrapper (`extract`, …) built on `utils.run_sync`. Concurrency is bounded by `max_concurrency` (default 10) via `utils.gather_bounded`.
 
 ### Pipeline
 
@@ -40,10 +42,10 @@ Text → Segmentor → Extractor → Consolidator → (Processor returns results
 ```
 
 - **Segmentor** (`components/segmentor.py`): Splits raw text into segments. `ParagraphSegmentor` splits by newline; `PageSegmentor` groups paragraphs into pages (default 10/page). Both handle `max_length` via split/truncate/raise strategies.
-- **Extractor** (`components/extractor.py`): Streams segments through LangChain + OpenAI to extract structured target objects. Uses `ThreadPoolExecutor` for concurrent extraction.
-- **Consolidator** (`components/consolidator.py`): Deduplicates extracted features using fuzzy string matching (`thefuzz`).
-- **Processor** (`components/processor.py`): Orchestrates Extractor → Consolidator into a single `process(text)` call.
-- **Annotator** (`components/annotator.py`): Takes consolidated targets and uses an LLM to map them back to each page of text.
+- **Extractor** (`components/extractor.py`): Chunks text (or a stream of text) and runs a Pydantic AI `Agent` with `output_type=list[Target]` on each chunk concurrently.
+- **Consolidator** (`components/consolidator.py`): Merges duplicate targets by sending batches to an LLM, re-running until the list is within `target_num * tolerance` or `max_iter` is reached.
+- **Processor** (`components/processor.py`): Orchestrates Extractor → Consolidator into a single `process(texts)` call; returns the consolidated list.
+- **Annotators** (`components/annotators/`): `Annotator` is an abstract base that chunks text and unions per-chunk results. `LLMAnnotator` asks an LLM for the indices of targets present, with the output type restricted to valid indices.
 
 ### Target Models
 
@@ -55,9 +57,14 @@ Targets drive the structured output schema passed to the LLM.
 
 ### Key Dependencies
 
-- `langchain` / `langchain-openai` — LLM orchestration and structured output
-- `thefuzz` — fuzzy matching for consolidation
-- `python-dotenv` — loading `OPENAI_API_KEY` from `.env` in local dev
+- `pydantic-ai-slim[openai]` — LLM orchestration and structured output. Extras: `textmancy[anthropic]`, `textmancy[google]`.
+- `pydantic` v2 — target models
+- `thefuzz` — declared but currently unused
+- `python-dotenv` (dev) — loading API keys from `.env` in local dev
+
+### Testing
+
+Tests never call real providers: `test/conftest.py` sets `pydantic_ai.models.ALLOW_MODEL_REQUESTS = False`. Use the `recording_model` fixture (a `FunctionModel` wrapper) to return canned output and inspect prompts.
 
 ### Linting Config
 
