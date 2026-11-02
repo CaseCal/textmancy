@@ -5,6 +5,7 @@ from typing import Union
 from pydantic import BaseModel
 from pydantic_ai import Agent
 from pydantic_ai.models import Model
+from thefuzz import fuzz
 
 from .. import utils
 
@@ -74,6 +75,51 @@ class Consolidator:
         result = await self.agent.run(f"{self.target_name}s to consolidate:\n{payload}")
         return result.output or []
 
+    def _batches(self, items: list[BaseModel]) -> list[list[BaseModel]]:
+        """Keep likely matches together without merging or discarding targets."""
+        if self.batch_size <= 0:
+            raise ValueError("batch_size must be positive")
+        groups: list[list[BaseModel]] = []
+        names: list[set[str]] = []
+        for item in items:
+            name = getattr(item, "name", None)
+            aliases = getattr(item, "known_as", [])
+            values = [name, *(aliases if isinstance(aliases, list) else [])]
+            keys = {
+                value.strip().casefold()
+                for value in values
+                if isinstance(value, str) and value.strip()
+            }
+            matches = [
+                i
+                for i, existing in enumerate(names)
+                if any(fuzz.ratio(a, b) >= 90 for a in keys for b in existing)
+            ]
+            if not matches:
+                groups.append([item])
+                names.append(keys)
+                continue
+            first = matches[0]
+            groups[first].append(item)
+            names[first].update(keys)
+            for index in reversed(matches[1:]):
+                groups[first].extend(groups.pop(index))
+                names[first].update(names.pop(index))
+
+        batches: list[list[BaseModel]] = []
+        for group in groups:
+            while group:
+                if not batches or len(batches[-1]) == self.batch_size:
+                    batches.append([])
+                if len(group) <= self.batch_size and len(group) > self.batch_size - len(
+                    batches[-1]
+                ):
+                    batches.append([])
+                count = self.batch_size - len(batches[-1])
+                batches[-1].extend(group[:count])
+                group = group[count:]
+        return batches
+
     async def consolidate_async(
         self, items: list[BaseModel], current_iter: int = 0
     ) -> list[BaseModel]:
@@ -87,7 +133,7 @@ class Consolidator:
         Returns:
             The consolidated targets.
         """
-        batches = [items[i : i + self.batch_size] for i in range(0, len(items), self.batch_size)]
+        batches = self._batches(items)
         # Entering the agent resolves a model string once per call and opens the provider's HTTP
         # client on the running loop, closing it on exit. Recursive passes re-enter as a no-op.
         async with self.agent:
@@ -95,13 +141,22 @@ class Consolidator:
                 (self._consolidate_batch_async(batch) for batch in batches),
                 self.max_concurrency,
             )
-            consolidated = [target for batch_result in results for target in batch_result]
+            consolidated = []
+            for batch, batch_result in zip(batches, results):
+                if not batch_result:
+                    self._logger.warning(
+                        "Consolidation returned an empty batch; retaining its input"
+                    )
+                    batch_result = batch
+                consolidated.extend(batch_result)
 
-            if (
-                len(consolidated) >= self.target_num * self.tolerance
-                and current_iter < self.max_iter
-            ):
-                return await self.consolidate_async(consolidated, current_iter + 1)
+            if len(consolidated) >= self.target_num * self.tolerance:
+                if len(consolidated) >= len(items):
+                    self._logger.warning("Consolidation stopped without reducing the target count")
+                elif current_iter >= self.max_iter:
+                    self._logger.warning("Consolidation reached max_iter above the target")
+                else:
+                    return await self.consolidate_async(consolidated, current_iter + 1)
 
         return consolidated
 
